@@ -3,3 +3,6 @@ version: ${version}
 author: Voltariuss
 api-version: ${minecraft.api.version}
 main: ${package.root}.CitizensVisibilityPlugin
+depend:
+  - Citizens
+  - ProtocolLib
