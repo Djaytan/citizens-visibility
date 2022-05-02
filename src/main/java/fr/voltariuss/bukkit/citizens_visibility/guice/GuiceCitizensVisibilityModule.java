@@ -22,6 +22,7 @@ import com.google.inject.Singleton;
 import fr.voltariuss.bukkit.citizens_visibility.CitizensVisibilityRuntimeException;
 import fr.voltariuss.bukkit.citizens_visibility.JdbcUrl;
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.CitizenVisibility;
+import javax.inject.Named;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AvailableSettings;
@@ -43,6 +44,14 @@ public class GuiceCitizensVisibilityModule extends AbstractModule {
   @Singleton
   public @NotNull JdbcUrl provideJdbcUrl() {
     return jdbcUrl;
+  }
+
+  @Provides
+  @Named("debugMode")
+  public Boolean provideDebugMode() {
+    boolean debugMode = false;
+    logger.info("Debug mode: {}", debugMode);
+    return debugMode;
   }
 
   @Provides
