@@ -1,6 +1,7 @@
-package fr.voltariuss.bukkit.citizens_visibility;
+package fr.voltariuss.bukkit.citizens_visibility.plugin;
 
-import fr.voltariuss.bukkit.citizens_visibility.guice.GuiceInjector;
+import fr.voltariuss.bukkit.citizens_visibility.RemakeBukkitLogger;
+import fr.voltariuss.bukkit.citizens_visibility.plugin.guice.GuiceInjector;
 import javax.inject.Inject;
 import org.bukkit.plugin.java.JavaPlugin;
 

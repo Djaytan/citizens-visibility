@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.voltariuss.bukkit.citizens_visibility;
+package fr.voltariuss.bukkit.citizens_visibility.plugin;
 
 import co.aikar.commands.PaperCommandManager;
 import fr.voltariuss.bukkit.citizens_visibility.controller.CitizensVisibilityCommand;

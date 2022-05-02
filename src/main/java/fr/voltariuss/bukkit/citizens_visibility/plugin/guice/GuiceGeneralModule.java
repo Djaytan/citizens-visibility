@@ -14,38 +14,24 @@
  * limitations under the License.
  */
 
-package fr.voltariuss.bukkit.citizens_visibility.guice;
+package fr.voltariuss.bukkit.citizens_visibility.plugin.guice;
 
-import co.aikar.commands.PaperCommandManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import java.util.Locale;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.plugin.Plugin;
+import java.util.ResourceBundle;
 import org.jetbrains.annotations.NotNull;
 
-public class GuiceBukkitLibsModule extends AbstractModule {
+/** General Guice module. */
+public class GuiceGeneralModule extends AbstractModule {
 
-  private final Plugin plugin;
-
-  public GuiceBukkitLibsModule(@NotNull Plugin plugin) {
-    this.plugin = plugin;
-  }
+  @Override
+  public void configure() {}
 
   @Provides
   @Singleton
-  public @NotNull MiniMessage provideMiniMessage() {
-    return MiniMessage.miniMessage();
-  }
-
-  @Provides
-  @Singleton
-  public @NotNull PaperCommandManager provideAcfPaperCommandManager() {
-    PaperCommandManager manager = new PaperCommandManager(plugin);
-    manager.enableUnstableAPI("help");
-    manager.addSupportedLanguage(Locale.FRANCE);
-    manager.getLocales().setDefaultLocale(Locale.FRANCE);
-    return manager;
+  public @NotNull ResourceBundle provideResourceBundle() {
+    return ResourceBundle.getBundle("citizens-properties", Locale.FRANCE);
   }
 }

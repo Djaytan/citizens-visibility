@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.voltariuss.bukkit.citizens_visibility;
+package fr.voltariuss.bukkit.citizens_visibility.plugin;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

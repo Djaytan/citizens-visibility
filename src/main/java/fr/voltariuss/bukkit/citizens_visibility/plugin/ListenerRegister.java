@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package fr.voltariuss.bukkit.citizens_visibility.guice;
+package fr.voltariuss.bukkit.citizens_visibility.plugin;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import org.bukkit.plugin.java.JavaPlugin;
+import javax.inject.Inject;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
-/** Guice injector for Bukkit plugin. */
-public final class GuiceInjector {
+public class ListenerRegister {
 
-  private GuiceInjector() {}
+  private final Plugin plugin;
+  private final PluginManager pluginManager;
 
-  public static void inject(@NotNull JavaPlugin plugin) {
-    Injector injector =
-        Guice.createInjector(
-            new GuiceBukkitModule(plugin),
-            new GuiceBukkitLibsModule(plugin),
-            new GuiceGeneralModule());
-    injector.injectMembers(plugin);
+  @Inject
+  public ListenerRegister(@NotNull Plugin plugin, @NotNull PluginManager pluginManager) {
+    this.plugin = plugin;
+    this.pluginManager = pluginManager;
   }
+
+  public void registerListeners() {}
 }

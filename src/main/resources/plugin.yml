@@ -2,7 +2,7 @@ name: ${name}
 version: ${version}
 author: Voltariuss
 api-version: ${minecraft.api.version}
-main: ${package.root}.CitizensVisibilityPlugin
+main: ${package.root}.plugin.CitizensVisibilityPlugin
 depend:
   - Citizens
   - ProtocolLib

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package fr.voltariuss.bukkit.citizens_visibility.guice;
+package fr.voltariuss.bukkit.citizens_visibility.plugin.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;

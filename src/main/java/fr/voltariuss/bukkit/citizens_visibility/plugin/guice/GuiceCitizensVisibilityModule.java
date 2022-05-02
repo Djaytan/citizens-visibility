@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package fr.voltariuss.bukkit.citizens_visibility.guice;
+package fr.voltariuss.bukkit.citizens_visibility.plugin.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import fr.voltariuss.bukkit.citizens_visibility.CitizensVisibilityRuntimeException;
-import fr.voltariuss.bukkit.citizens_visibility.JdbcUrl;
+import fr.voltariuss.bukkit.citizens_visibility.plugin.JdbcUrl;
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.CitizenVisibility;
 import javax.inject.Named;
 import org.hibernate.HibernateException;
