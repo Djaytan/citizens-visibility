@@ -20,6 +20,7 @@ import co.aikar.commands.PaperCommandManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import java.util.Locale;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +42,10 @@ public class GuiceBukkitLibsModule extends AbstractModule {
   @Provides
   @Singleton
   public @NotNull PaperCommandManager provideAcfPaperCommandManager() {
-    return new PaperCommandManager(plugin);
+    PaperCommandManager manager = new PaperCommandManager(plugin);
+    manager.enableUnstableAPI("help");
+    manager.addSupportedLanguage(Locale.FRANCE);
+    manager.getLocales().setDefaultLocale(Locale.FRANCE);
+    return manager;
   }
 }
