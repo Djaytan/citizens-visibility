@@ -17,6 +17,7 @@
 package fr.voltariuss.bukkit.citizens_visibility;
 
 import co.aikar.commands.PaperCommandManager;
+import fr.voltariuss.bukkit.citizens_visibility.controller.CitizensVisibilityCommand;
 import java.util.Arrays;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -29,14 +30,21 @@ public class CommandRegister {
 
   private final PaperCommandManager paperCommandManager;
   private final Server server;
+  private final CitizensVisibilityCommand citizensVisibilityCommand;
 
   @Inject
-  public CommandRegister(@NotNull PaperCommandManager paperCommandManager, @NotNull Server server) {
+  public CommandRegister(
+      @NotNull PaperCommandManager paperCommandManager,
+      @NotNull Server server,
+      @NotNull CitizensVisibilityCommand citizensVisibilityCommand) {
     this.paperCommandManager = paperCommandManager;
     this.server = server;
+    this.citizensVisibilityCommand = citizensVisibilityCommand;
   }
 
-  public void registerCommands() {}
+  public void registerCommands() {
+    paperCommandManager.registerCommand(citizensVisibilityCommand);
+  }
 
   public void registerCommandCompletions() {
     paperCommandManager
