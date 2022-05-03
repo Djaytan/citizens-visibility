@@ -52,17 +52,23 @@ public class CitizenVisibility {
       return true;
     }
 
-    if (o == null || getClass() != o.getClass()) {
+    if (!(o instanceof CitizenVisibility that)) {
       return false;
     }
 
-    CitizenVisibility that = (CitizenVisibility) o;
-
-    return new EqualsBuilder().append(playerUuid, that.playerUuid).isEquals();
+    return new EqualsBuilder()
+        .append(npcId, that.npcId)
+        .append(isNpcVisible, that.isNpcVisible)
+        .append(playerUuid, that.playerUuid)
+        .isEquals();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37).append(playerUuid).toHashCode();
+    return new HashCodeBuilder(17, 37)
+        .append(playerUuid)
+        .append(npcId)
+        .append(isNpcVisible)
+        .toHashCode();
   }
 }
