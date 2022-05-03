@@ -16,12 +16,14 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Entity
 @Table(name = "citizens_visibility_player")
 @ToString
+@Accessors(fluent = true, chain = true, makeFinal = true)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @RequiredArgsConstructor

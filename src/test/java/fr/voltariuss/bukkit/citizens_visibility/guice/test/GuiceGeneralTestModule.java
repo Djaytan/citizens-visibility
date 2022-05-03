@@ -27,20 +27,15 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sqlite.JDBC;
-import org.sqlite.SQLiteDataSource;
 import org.sqlite.hibernate.dialect.SQLiteDialect;
 
 public class GuiceGeneralTestModule extends AbstractModule {
 
-  private static final Logger logger = LoggerFactory.getLogger(GuiceGeneralTestModule.class);
-
   private final String jdbcUrl;
 
   public GuiceGeneralTestModule() {
-    this.jdbcUrl = "jdbc:sqlite:test.db";
+    this.jdbcUrl = "jdbc:sqlite::memory:";
   }
 
   @Override
@@ -64,22 +59,16 @@ public class GuiceGeneralTestModule extends AbstractModule {
   @Singleton
   public @NotNull SessionFactory provideSessionFactory() {
     try {
-      // The SessionFactory must be built only once for application lifecycle
-      Configuration configuration =
-          new Configuration()
-              .setProperty(AvailableSettings.URL, jdbcUrl)
-              .setProperty(AvailableSettings.DRIVER, JDBC.class.getName())
-              .setProperty(AvailableSettings.DATASOURCE, SQLiteDataSource.class.getName())
-              .setProperty(AvailableSettings.DIALECT, SQLiteDialect.class.getName())
-              .setProperty(AvailableSettings.SHOW_SQL, "false")
-              .setProperty(AvailableSettings.FORMAT_SQL, "false")
-              .setProperty(AvailableSettings.HBM2DDL_AUTO, "update")
-              .setProperty(AvailableSettings.HBM2DDL_CHARSET_NAME, "UTF-8")
-              .addAnnotatedClass(CitizenVisibility.class)
-              .configure();
-
-      logger.info("Database connexion established (SQLite).");
-      return configuration.buildSessionFactory();
+      return new Configuration()
+          .setProperty(AvailableSettings.URL, jdbcUrl)
+          .setProperty(AvailableSettings.DRIVER, JDBC.class.getName())
+          .setProperty(AvailableSettings.DIALECT, SQLiteDialect.class.getName())
+          .setProperty(AvailableSettings.SHOW_SQL, "false")
+          .setProperty(AvailableSettings.FORMAT_SQL, "false")
+          .setProperty(AvailableSettings.HBM2DDL_AUTO, "create-drop")
+          .setProperty(AvailableSettings.HBM2DDL_CHARSET_NAME, "UTF-8")
+          .addAnnotatedClass(CitizenVisibility.class)
+          .buildSessionFactory();
     } catch (HibernateException e) {
       throw new CitizensVisibilityRuntimeException(
           String.format("Database connection failed (SQLite): %s", jdbcUrl), e);
