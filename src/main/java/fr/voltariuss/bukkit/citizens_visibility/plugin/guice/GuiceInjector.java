@@ -31,6 +31,8 @@ public final class GuiceInjector {
         Guice.createInjector(
             new GuiceBukkitModule(plugin),
             new GuiceBukkitLibsModule(plugin),
+            new GuiceCitizensVisibilityModule(
+                plugin.getSLF4JLogger(), plugin.getDataFolder().toPath()),
             new GuiceGeneralModule());
     injector.injectMembers(plugin);
   }

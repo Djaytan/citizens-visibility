@@ -20,8 +20,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import fr.voltariuss.bukkit.citizens_visibility.CitizensVisibilityRuntimeException;
-import fr.voltariuss.bukkit.citizens_visibility.plugin.JdbcUrl;
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.CitizenVisibility;
+import java.nio.file.Path;
 import javax.inject.Named;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
@@ -29,20 +29,26 @@ import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
+import org.sqlite.JDBC;
+import org.sqlite.SQLiteDataSource;
+import org.sqlite.hibernate.dialect.SQLiteDialect;
 
 public class GuiceCitizensVisibilityModule extends AbstractModule {
 
-  private final JdbcUrl jdbcUrl;
   private final Logger logger;
+  private final String jdbcUrl;
 
-  public GuiceCitizensVisibilityModule(@NotNull Logger logger) {
-    this.jdbcUrl = new JdbcUrl("", 0, ""); // TODO: JdbcUrl
+  public GuiceCitizensVisibilityModule(@NotNull Logger logger, Path pluginDataSourcePath) {
     this.logger = logger;
+
+    Path sqliteDatabaseFile = pluginDataSourcePath.resolve("data.db");
+    this.jdbcUrl = "jdbc:sqlite:" + sqliteDatabaseFile;
   }
 
   @Provides
   @Singleton
-  public @NotNull JdbcUrl provideJdbcUrl() {
+  @Named("jdbcUrl")
+  public @NotNull String provideJdbcUrl() {
     return jdbcUrl;
   }
 
@@ -59,40 +65,24 @@ public class GuiceCitizensVisibilityModule extends AbstractModule {
   public @NotNull SessionFactory provideSessionFactory() {
     try {
       // The SessionFactory must be built only once for application lifecycle
-      Configuration configuration = new Configuration();
+      Configuration configuration =
+          new Configuration()
+              .setProperty(AvailableSettings.URL, jdbcUrl)
+              .setProperty(AvailableSettings.DRIVER, JDBC.class.getName())
+              .setProperty(AvailableSettings.DATASOURCE, SQLiteDataSource.class.getName())
+              .setProperty(AvailableSettings.DIALECT, SQLiteDialect.class.getName())
+              .setProperty(AvailableSettings.SHOW_SQL, "false")
+              .setProperty(AvailableSettings.FORMAT_SQL, "false")
+              .setProperty(AvailableSettings.HBM2DDL_AUTO, "update")
+              .setProperty(AvailableSettings.HBM2DDL_CHARSET_NAME, "UTF-8")
+              .addAnnotatedClass(CitizenVisibility.class)
+              .configure();
 
-      configuration.setProperty(AvailableSettings.URL, jdbcUrl.asStringUrl());
-      configuration.setProperty(AvailableSettings.USER, ""); // TODO: database username
-      configuration.setProperty(AvailableSettings.PASS, ""); // TODO: database password
-      configuration.setProperty(
-          AvailableSettings.CONNECTION_PROVIDER,
-          "org.hibernate.hikaricp.internal.HikariCPConnectionProvider");
-      configuration.setProperty(AvailableSettings.DRIVER, "org.mariadb.jdbc.Driver");
-      configuration.setProperty(AvailableSettings.DATASOURCE, "org.mariadb.jdbc.MariaDbDataSource");
-      configuration.setProperty(
-          AvailableSettings.DIALECT, "org.hibernate.dialect.MariaDBDialect"); // TODO: SQLite
-      configuration.setProperty(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-      configuration.setProperty(AvailableSettings.SHOW_SQL, "false");
-      configuration.setProperty(AvailableSettings.FORMAT_SQL, "false");
-      configuration.setProperty(AvailableSettings.HBM2DDL_AUTO, "update");
-      configuration.setProperty(AvailableSettings.HBM2DDL_CHARSET_NAME, "UTF-8");
-      // TODO: cache properties definition
-
-      configuration.setProperty("hibernate.hikari.maximumPoolSize", "10");
-      configuration.setProperty("hibernate.hikari.minimumIdle", "5");
-      // Because plugin is mono-thread only one SQL request is dispatched at the same time, so there
-      // isn't any concurrency with the database. It's why serializable transaction isolation is
-      // actually the preference to ensure the best isolation as possible.
-      configuration.setProperty(
-          "hibernate.hikari.transactionIsolation", "TRANSACTION_SERIALIZABLE");
-
-      configuration.addAnnotatedClass(CitizenVisibility.class);
-
-      logger.info("Database connexion established.");
+      logger.info("Database connexion established (SQLite).");
       return configuration.buildSessionFactory();
     } catch (HibernateException e) {
       throw new CitizensVisibilityRuntimeException(
-          String.format("Database connection failed: %s", jdbcUrl.asStringUrl()), e);
+          String.format("Database connection failed (SQLite): %s", jdbcUrl), e);
     }
   }
 }
