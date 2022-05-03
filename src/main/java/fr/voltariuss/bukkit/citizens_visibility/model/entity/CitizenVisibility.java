@@ -30,7 +30,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class CitizenVisibility {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "cv_id", nullable = false, updatable = false)
   private long id;
 
