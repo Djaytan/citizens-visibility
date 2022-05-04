@@ -4,6 +4,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import fr.voltariuss.bukkit.citizens_visibility.guice.test.GuiceGeneralTestModule;
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.CitizenVisibility;
+import java.util.Random;
 import java.util.UUID;
 import junit.framework.Assert;
 import org.hibernate.Session;
@@ -33,33 +34,33 @@ class DatabaseConnectionTest {
   }
 
   @Test
-  void connectDatabase() {
+  void givenInMemoryDatabaseConnection_thenExpectToExistAndBeOpened() {
     Assert.assertNotNull(sessionFactory);
     Assert.assertTrue(sessionFactory.isOpen());
   }
 
   @Test
-  void requestDatabase() {
-    UUID playerUuid = UUID.randomUUID();
-    CitizenVisibility citizenVisibility = new CitizenVisibility(playerUuid);
-    citizenVisibility.npcId(1);
-    citizenVisibility.isNpcVisible(true);
+  void givenRandomCitizenVisibility_whenPersisted_thenFindGiveBackTheSameObjectWithIdSet() {
+    Random random = new Random();
+
+    CitizenVisibility initCv = new CitizenVisibility(UUID.randomUUID());
+    initCv.npcId(random.nextInt());
+    initCv.isNpcVisible(random.nextBoolean());
 
     Session session1 = sessionFactory.openSession();
     Transaction tx = session1.beginTransaction();
-    session1.persist(citizenVisibility);
+    session1.persist(initCv);
     tx.commit();
     session1.close();
 
     Session session2 = sessionFactory.openSession();
-    @Nullable
-    CitizenVisibility retrievedCitizenVisibility = session2.get(CitizenVisibility.class, 1L);
+    @Nullable CitizenVisibility retrievedCv = session2.get(CitizenVisibility.class, 1L);
     session2.close();
 
-    Assert.assertNotNull(retrievedCitizenVisibility);
-    Assert.assertEquals(1L, retrievedCitizenVisibility.id());
-    Assert.assertEquals(playerUuid, retrievedCitizenVisibility.playerUuid());
-    Assert.assertEquals(1, retrievedCitizenVisibility.npcId());
-    Assert.assertTrue(retrievedCitizenVisibility.isNpcVisible());
+    Assert.assertNotNull(retrievedCv);
+    Assert.assertEquals(1L, retrievedCv.id());
+    Assert.assertEquals(initCv.playerUuid(), retrievedCv.playerUuid());
+    Assert.assertEquals(initCv.npcId(), retrievedCv.npcId());
+    Assert.assertEquals(initCv.isNpcVisible(), retrievedCv.isNpcVisible());
   }
 }
