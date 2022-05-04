@@ -186,11 +186,13 @@
       <groupId>com.github.gwenn</groupId>
       <artifactId>sqlite-dialect</artifactId>
       <version>0.1.2</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.xerial</groupId>
       <artifactId>sqlite-jdbc</artifactId>
       <version>3.36.0.3</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.jetbrains</groupId>

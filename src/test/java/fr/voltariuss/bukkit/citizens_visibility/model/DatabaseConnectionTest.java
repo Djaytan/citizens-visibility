@@ -1,4 +1,4 @@
-package fr.voltariuss.bukkit.citizens_visibility;
+package fr.voltariuss.bukkit.citizens_visibility.model;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

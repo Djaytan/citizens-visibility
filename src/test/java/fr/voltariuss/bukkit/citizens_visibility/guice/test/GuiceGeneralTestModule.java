@@ -43,20 +43,6 @@ public class GuiceGeneralTestModule extends AbstractModule {
 
   @Provides
   @Singleton
-  @Named("jdbcUrl")
-  public @NotNull String provideJdbcUrl() {
-    return jdbcUrl;
-  }
-
-  @Provides
-  @Singleton
-  @Named("debugMode")
-  public boolean provideDebugMode() {
-    return false;
-  }
-
-  @Provides
-  @Singleton
   public @NotNull SessionFactory provideSessionFactory() {
     try {
       return new Configuration()
