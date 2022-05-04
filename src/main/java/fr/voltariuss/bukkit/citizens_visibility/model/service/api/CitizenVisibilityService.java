@@ -30,7 +30,7 @@ public interface CitizenVisibilityService {
    * @param citizenId The targeted citizen's ID.
    * @return An optional citizen's visibility instance.
    */
-  Optional<CitizenVisibility> find(@NotNull UUID playerUuid, int citizenId);
+  @NotNull Optional<CitizenVisibility> find(@NotNull UUID playerUuid, int citizenId);
 
   /**
    * Hides the targeted citizen for the given player's UUID.

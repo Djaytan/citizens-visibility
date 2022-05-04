@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
 
   @Override
-  public Optional<CitizenVisibility> find(@NotNull UUID playerUuid, int citizenId) {
+  public @NotNull Optional<CitizenVisibility> find(@NotNull UUID playerUuid, int citizenId) {
     throw new NotImplementedException();
   }
 
