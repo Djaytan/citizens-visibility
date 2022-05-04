@@ -44,8 +44,8 @@ class DatabaseConnectionTest {
     Random random = new Random();
 
     CitizenVisibility initCv = new CitizenVisibility(UUID.randomUUID());
-    initCv.npcId(random.nextInt());
-    initCv.isNpcVisible(random.nextBoolean());
+    initCv.citizenId(random.nextInt());
+    initCv.isCitizenVisible(random.nextBoolean());
 
     Session session1 = sessionFactory.openSession();
     Transaction tx = session1.beginTransaction();
@@ -60,7 +60,7 @@ class DatabaseConnectionTest {
     Assert.assertNotNull(retrievedCv);
     Assert.assertEquals(1L, retrievedCv.id());
     Assert.assertEquals(initCv.playerUuid(), retrievedCv.playerUuid());
-    Assert.assertEquals(initCv.npcId(), retrievedCv.npcId());
-    Assert.assertEquals(initCv.isNpcVisible(), retrievedCv.isNpcVisible());
+    Assert.assertEquals(initCv.citizenId(), retrievedCv.citizenId());
+    Assert.assertEquals(initCv.isCitizenVisible(), retrievedCv.isCitizenVisible());
   }
 }

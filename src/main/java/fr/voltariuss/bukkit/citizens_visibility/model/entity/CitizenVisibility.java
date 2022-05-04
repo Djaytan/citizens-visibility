@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Entity
-@Table(name = "citizens_visibility_player")
+@Table(name = "citizen_visibility")
 @ToString
 @Accessors(fluent = true, chain = true, makeFinal = true)
 @Getter
@@ -40,13 +40,13 @@ public class CitizenVisibility {
   @NonNull
   private UUID playerUuid;
 
-  @Column(name = "cv_npc_id")
+  @Column(name = "cv_citizen_id")
   @Setter
-  private int npcId;
+  private int citizenId;
 
-  @Column(name = "cv_is_npc_visible")
+  @Column(name = "cv_is_citizen_visible")
   @Setter
-  private boolean isNpcVisible;
+  private boolean isCitizenVisible;
 
   @Override
   public boolean equals(Object o) {
@@ -59,8 +59,8 @@ public class CitizenVisibility {
     }
 
     return new EqualsBuilder()
-        .append(npcId, that.npcId)
-        .append(isNpcVisible, that.isNpcVisible)
+        .append(citizenId, that.citizenId)
+        .append(isCitizenVisible, that.isCitizenVisible)
         .append(playerUuid, that.playerUuid)
         .isEquals();
   }
@@ -69,8 +69,8 @@ public class CitizenVisibility {
   public int hashCode() {
     return new HashCodeBuilder(17, 37)
         .append(playerUuid)
-        .append(npcId)
-        .append(isNpcVisible)
+        .append(citizenId)
+        .append(isCitizenVisible)
         .toHashCode();
   }
 }
