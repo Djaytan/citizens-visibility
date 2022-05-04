@@ -18,16 +18,17 @@ package fr.voltariuss.bukkit.citizens_visibility.model.entity.converter;
 
 import java.util.UUID;
 import javax.persistence.AttributeConverter;
+import org.jetbrains.annotations.Nullable;
 
 public class UUIDConverter implements AttributeConverter<UUID, String> {
 
   @Override
-  public String convertToDatabaseColumn(UUID uuid) {
-    return uuid.toString();
+  public @Nullable String convertToDatabaseColumn(@Nullable UUID uuid) {
+    return uuid != null ? uuid.toString() : null;
   }
 
   @Override
-  public UUID convertToEntityAttribute(String s) {
-    return UUID.fromString(s);
+  public @Nullable UUID convertToEntityAttribute(@Nullable String uuidString) {
+    return uuidString != null ? UUID.fromString(uuidString) : null;
   }
 }
