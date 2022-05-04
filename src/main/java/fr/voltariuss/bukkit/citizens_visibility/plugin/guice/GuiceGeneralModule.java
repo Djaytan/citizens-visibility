@@ -19,6 +19,8 @@ package fr.voltariuss.bukkit.citizens_visibility.plugin.guice;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import fr.voltariuss.bukkit.citizens_visibility.model.service.api.CitizenVisibilityService;
+import fr.voltariuss.bukkit.citizens_visibility.model.service.implementation.CitizenVisibilityServiceImpl;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +29,9 @@ import org.jetbrains.annotations.NotNull;
 public class GuiceGeneralModule extends AbstractModule {
 
   @Override
-  public void configure() {}
+  public void configure() {
+    bind(CitizenVisibilityService.class).to(CitizenVisibilityServiceImpl.class);
+  }
 
   @Provides
   @Singleton
