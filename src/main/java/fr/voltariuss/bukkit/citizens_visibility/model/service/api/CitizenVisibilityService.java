@@ -29,6 +29,7 @@ public interface CitizenVisibilityService {
    * @param playerUuid The concerning player's UUID.
    * @param citizenId The targeted citizen's ID.
    * @return An optional citizen's visibility instance.
+   * @throws NullPointerException if the player UUID is null.
    */
   @NotNull Optional<CitizenVisibility> find(@NotNull UUID playerUuid, int citizenId);
 
@@ -37,6 +38,7 @@ public interface CitizenVisibilityService {
    *
    * @param playerUuid The concerning player's UUID.
    * @param citizenId The targeted citizen.
+   * @throws NullPointerException if the player UUID is null.
    */
   void hideCitizen(@NotNull UUID playerUuid, int citizenId);
 
@@ -45,6 +47,7 @@ public interface CitizenVisibilityService {
    *
    * @param playersUuids The concerning players' UUIDs.
    * @param citizenId The targeted citizen.
+   * @throws NullPointerException if the list of players UUIDs is null.
    */
   void hideCitizen(@NotNull List<UUID> playersUuids, int citizenId);
 
@@ -53,6 +56,7 @@ public interface CitizenVisibilityService {
    *
    * @param playerUuid The concerning player's UUID.
    * @param citizenId The targeted citizen.
+   * @throws NullPointerException if the player UUID is null.
    */
   void showCitizen(@NotNull UUID playerUuid, int citizenId);
 
@@ -61,6 +65,7 @@ public interface CitizenVisibilityService {
    *
    * @param playersUuids The concerning players' UUIDs.
    * @param citizenId The targeted citizen.
+   * @throws NullPointerException if the list of players UUIDs is null.
    */
   void showCitizen(@NotNull List<UUID> playersUuids, int citizenId);
 }
