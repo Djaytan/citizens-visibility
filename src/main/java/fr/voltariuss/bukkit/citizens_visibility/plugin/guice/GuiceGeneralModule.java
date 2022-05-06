@@ -20,7 +20,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.CitizenVisibilityService;
+import fr.voltariuss.bukkit.citizens_visibility.model.service.api.PlayerService;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.implementation.CitizenVisibilityServiceImpl;
+import fr.voltariuss.bukkit.citizens_visibility.model.service.implementation.PlayerServiceImpl;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +33,7 @@ public class GuiceGeneralModule extends AbstractModule {
   @Override
   public void configure() {
     bind(CitizenVisibilityService.class).to(CitizenVisibilityServiceImpl.class);
+    bind(PlayerService.class).to(PlayerServiceImpl.class);
   }
 
   @Provides
