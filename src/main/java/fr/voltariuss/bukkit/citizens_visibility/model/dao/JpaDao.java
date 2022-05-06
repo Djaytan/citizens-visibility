@@ -25,7 +25,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.jetbrains.annotations.NotNull;
 
@@ -103,15 +102,9 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
     Preconditions.checkNotNull(action);
 
     try (Session session = sessionFactory.openSession()) {
-      Transaction transaction = session.beginTransaction();
-      try {
-        transaction.begin();
-        action.accept(session);
-        transaction.commit();
-      } catch (RuntimeException e) {
-        transaction.rollback();
-        throw new JpaDaoException("Transaction failed: rollback action", e);
-      }
+      session.beginTransaction();
+      action.accept(session);
+      session.getTransaction().commit();
     } catch (RuntimeException e) {
       throw new JpaDaoException("Something went wrong during session", e);
     }
@@ -121,16 +114,10 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
     Preconditions.checkNotNull(action);
 
     try (Session session = sessionFactory.openSession()) {
-      Transaction transaction = session.beginTransaction();
-      try {
-        transaction.begin();
-        Query<T> query = action.apply(session);
-        transaction.commit();
-        return query;
-      } catch (RuntimeException e) {
-        transaction.rollback();
-        throw new JpaDaoException("Transaction failed: rollback action", e);
-      }
+      session.beginTransaction();
+      Query<T> query = action.apply(session);
+      session.getTransaction().commit();
+      return query;
     } catch (RuntimeException e) {
       throw new JpaDaoException("Something went wrong during session", e);
     }
