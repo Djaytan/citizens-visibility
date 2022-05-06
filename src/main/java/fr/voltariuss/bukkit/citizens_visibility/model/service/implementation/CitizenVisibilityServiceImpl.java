@@ -9,6 +9,7 @@ import fr.voltariuss.bukkit.citizens_visibility.model.service.api.PlayerService;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.response.CitizenVisibilityFetchResponse;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.response.CitizenVisibilityResponse;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.response.CitizenVisibilityResponse.ResponseType;
+import fr.voltariuss.bukkit.citizens_visibility.model.service.api.response.PlayerFetchResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -135,11 +136,12 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
 
   private @NotNull CitizenVisibilityResponse toggleCitizenVisibility(
       int citizenId, boolean isCitizenVisible) {
-    List<Player> players = playerService.findAll();
-    List<CitizenVisibility> citizenVisibilities = new ArrayList<>(players.size());
+    PlayerFetchResponse playerFetchResponse = playerService.findAll();
+    List<CitizenVisibility> citizenVisibilities =
+        new ArrayList<>(playerFetchResponse.players().size());
 
     try {
-      for (Player player : players) {
+      for (Player player : playerFetchResponse.players()) {
         UUID playerUuid = player.playerUuid();
         Optional<CitizenVisibility> fetchedCv = citizenVisibilityDao.find(playerUuid, citizenId);
 

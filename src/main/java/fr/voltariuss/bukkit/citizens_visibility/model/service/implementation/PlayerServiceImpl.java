@@ -29,6 +29,13 @@ public class PlayerServiceImpl implements PlayerService {
 
   @Override
   public PlayerResponse registerIfNotExists(@NotNull UUID playerUuid) {
+    if (playerUuid == null) {
+      return PlayerResponse.builder()
+          .responseType(ResponseType.BAD_INPUT)
+          .failureMessage("The player's UUID must be specified.")
+          .build();
+    }
+
     try {
       Optional<Player> player = playerDao.findById(playerUuid);
 
