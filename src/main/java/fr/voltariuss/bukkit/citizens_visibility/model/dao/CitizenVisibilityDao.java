@@ -2,6 +2,7 @@ package fr.voltariuss.bukkit.citizens_visibility.model.dao;
 
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.CitizenVisibility;
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.converter.UUIDConverter;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -32,5 +33,16 @@ public class CitizenVisibilityDao extends JpaDao<CitizenVisibility, Long> {
                     .setParameter("playerUuid", uuidConverter.convertToDatabaseColumn(playerUuid))
                     .setParameter("citizenId", citizenId))
         .uniqueResultOptional();
+  }
+
+  public @NotNull List<CitizenVisibility> findByCitizenId(int citizenId) {
+    return executeQueryTransaction(
+            session ->
+                session
+                    .createQuery(
+                        "SELECT cv FROM CitizenVisibility cv WHERE cv.citizenId = :citizenId",
+                        CitizenVisibility.class)
+                    .setParameter("citizenId", citizenId))
+        .list();
   }
 }

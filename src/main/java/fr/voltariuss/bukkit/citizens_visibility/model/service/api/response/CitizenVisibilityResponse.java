@@ -1,29 +1,34 @@
 package fr.voltariuss.bukkit.citizens_visibility.model.service.api.response;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
+@Builder
 @Accessors(fluent = true, chain = true, makeFinal = true)
-@Data
-@RequiredArgsConstructor
+@Getter
+@ToString
+@EqualsAndHashCode
 public class CitizenVisibilityResponse {
 
   public enum ResponseType {
     SUCCESS,
-    FAILURE
+    BAD_INPUT,
+    SERVER_ERROR
   }
 
   @NonNull private final ResponseType responseType;
 
   @NonNull private final String failureMessage;
 
-  public CitizenVisibilityResponse() {
-    this(ResponseType.SUCCESS, "");
+  public boolean isSuccessful() {
+    return responseType == ResponseType.SUCCESS;
   }
 
-  public boolean success() {
-    return responseType == ResponseType.SUCCESS;
+  public boolean isFailure() {
+    return responseType != ResponseType.SUCCESS;
   }
 }

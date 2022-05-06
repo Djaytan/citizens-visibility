@@ -1,9 +1,9 @@
 package fr.voltariuss.bukkit.citizens_visibility.model.service.api;
 
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.CitizenVisibility;
+import fr.voltariuss.bukkit.citizens_visibility.model.entity.Player;
+import fr.voltariuss.bukkit.citizens_visibility.model.service.api.response.CitizenVisibilityFetchResponse;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.response.CitizenVisibilityResponse;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,11 +29,11 @@ public interface CitizenVisibilityService {
    *
    * @param playerUuid The concerning player's UUID.
    * @param citizenId The targeted citizen's ID.
-   * @return An optional citizen's visibility instance.
-   * @throws NullPointerException if the player UUID is null.
+   * @return A response which may contains the sought value and specify whether the action has been
+   *     realized successfully or not.
    */
   @NotNull
-  Optional<CitizenVisibility> find(@NotNull UUID playerUuid, int citizenId);
+  CitizenVisibilityFetchResponse find(@NotNull UUID playerUuid, int citizenId);
 
   /**
    * Hides the targeted citizen for the given player's UUID.
@@ -41,21 +41,18 @@ public interface CitizenVisibilityService {
    * @param playerUuid The concerning player's UUID.
    * @param citizenId The targeted citizen.
    * @return A response which specify whether the action has been realized successfully or not.
-   * @throws NullPointerException if the player UUID is null.
    */
   @NotNull
   CitizenVisibilityResponse hideCitizen(@NotNull UUID playerUuid, int citizenId);
 
   /**
-   * Hides the targeted citizen for the given players' UUIDs.
+   * Hides the targeted citizen for all registered {@link Player}s.
    *
-   * @param playersUuids The concerning players' UUIDs.
    * @param citizenId The targeted citizen.
    * @return A response which specify whether the action has been realized successfully or not.
-   * @throws NullPointerException if the list of players UUIDs is null.
    */
   @NotNull
-  CitizenVisibilityResponse hideCitizen(@NotNull List<UUID> playersUuids, int citizenId);
+  CitizenVisibilityResponse hideCitizen(int citizenId);
 
   /**
    * Shows the targeted citizen for the given player's UUID.
@@ -63,19 +60,16 @@ public interface CitizenVisibilityService {
    * @param playerUuid The concerning player's UUID.
    * @param citizenId The targeted citizen.
    * @return A response which specify whether the action has been realized successfully or not.
-   * @throws NullPointerException if the player UUID is null.
    */
   @NotNull
   CitizenVisibilityResponse showCitizen(@NotNull UUID playerUuid, int citizenId);
 
   /**
-   * Shows the targeted citizen for the given players' UUIDs.
+   * Shows the targeted citizen for all registered {@link Player}s.
    *
-   * @param playersUuids The concerning players' UUIDs.
    * @param citizenId The targeted citizen.
    * @return A response which specify whether the action has been realized successfully or not.
-   * @throws NullPointerException if the list of players UUIDs is null.
    */
   @NotNull
-  CitizenVisibilityResponse showCitizen(@NotNull List<UUID> playersUuids, int citizenId);
+  CitizenVisibilityResponse showCitizen(int citizenId);
 }
