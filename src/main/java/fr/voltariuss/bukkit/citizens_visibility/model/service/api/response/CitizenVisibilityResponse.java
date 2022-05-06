@@ -1,5 +1,6 @@
 package fr.voltariuss.bukkit.citizens_visibility.model.service.api.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import lombok.experimental.Accessors;
 @Getter
 @ToString
 @EqualsAndHashCode
+@AllArgsConstructor
 public class CitizenVisibilityResponse {
 
   public enum ResponseType {
