@@ -55,12 +55,14 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
     } catch (PersistenceException e) {
       logger.error(
           String.format(
-              "Something went wrong when fetching citizen visibility for the player's UUID %s",
+              "Something went wrong when fetching citizen visibility for the player's UUID '%s'",
               playerUuid),
           e);
       return CitizenVisibilityFetchResponse.builder()
           .responseType(ResponseType.SERVER_ERROR)
-          .failureMessage("")
+          .failureMessage(
+              String.format(
+                  "Failed to fetch citizen visibility for the player's UUID '%s'", playerUuid))
           .build();
     }
   }
@@ -117,14 +119,14 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
     } catch (PersistenceException e) {
       logger.error(
           String.format(
-              "Something went wrong when toggling citizen visibility for the player's UUID %s",
+              "Something went wrong when toggling citizen visibility for the player's UUID '%s'",
               playerUuid),
           e);
       return CitizenVisibilityResponse.builder()
           .responseType(ResponseType.SERVER_ERROR)
           .failureMessage(
               String.format(
-                  "Failed to toggling citizen visibility for player's UUID %s.", playerUuid))
+                  "Failed to toggling citizen visibility for player's UUID '%s'.", playerUuid))
           .build();
     }
 
