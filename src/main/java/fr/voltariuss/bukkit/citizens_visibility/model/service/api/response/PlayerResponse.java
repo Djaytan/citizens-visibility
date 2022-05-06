@@ -8,8 +8,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
-@Builder
+@SuperBuilder
 @Accessors(fluent = true, chain = true, makeFinal = true)
 @Getter
 @ToString
