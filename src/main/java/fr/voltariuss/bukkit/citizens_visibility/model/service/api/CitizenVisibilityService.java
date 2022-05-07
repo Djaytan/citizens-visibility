@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * possible with the {@link #showCitizen(UUID, int) showCitizen} method.
  *
  * <p>When the need to know if a given citizen is visible or not for a player, all it's necessary to
- * do is to call the {@link #find(UUID, int) find} method and check the {@link
+ * do is to call the {@link #fetch(UUID, int) fetch} method and check the {@link
  * CitizenVisibility#isCitizenVisible()} value.
  *
  * @author Voltariuss
@@ -57,8 +57,6 @@ public interface CitizenVisibilityService {
    * Hides the targeted citizen for all registered {@link Player}s.
    *
    * @param citizenId The targeted citizen.
-   * @return A response which specify whether the action has been realized successfully or not and
-   *     the update citizen visibility value.
    */
   void hideCitizenForAllPlayers(int citizenId);
 
