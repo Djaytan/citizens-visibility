@@ -100,19 +100,19 @@ public class MessageControllerImpl implements MessageController {
       @NotNull MessageType messageType, @NotNull Component message) {
     String messageFormatKey =
         switch (messageType) {
-          case INFO -> "diagonia.common.message.format.info";
-          case SUCCESS -> "diagonia.common.message.format.success";
-          case FAILURE -> "diagonia.common.message.format.failure";
-          case WARNING -> "diagonia.common.message.format.warning";
-          case ERROR -> "diagonia.common.message.format.error";
-          case BROADCAST -> "diagonia.common.message.format.broadcast";
-          case DEBUG -> "diagonia.common.message.format.debug";
+          case INFO -> "citizen_visibility.common.message.format.info";
+          case SUCCESS -> "citizen_visibility.common.message.format.success";
+          case FAILURE -> "citizen_visibility.common.message.format.failure";
+          case WARNING -> "citizen_visibility.common.message.format.warning";
+          case ERROR -> "citizen_visibility.common.message.format.error";
+          case BROADCAST -> "citizen_visibility.common.message.format.broadcast";
+          case DEBUG -> "citizen_visibility.common.message.format.debug";
         };
 
     return miniMessage
         .deserialize(
             resourceBundle.getString(messageFormatKey),
-            TagResolver.resolver(Placeholder.component("diag_message_content", message)))
+            TagResolver.resolver(Placeholder.component("cv_message_content", message)))
         .decoration(TextDecoration.ITALIC, false);
   }
 }
