@@ -63,7 +63,7 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
                 session
                     .createQuery(
                         String.format(
-                            "SELECT %1$s FROM %1$s WHERE id = :id",
+                            "SELECT o FROM %1$s o WHERE o.id = :id",
                             persistentClass.getSimpleName()),
                         persistentClass)
                     .setParameter("id", id))
@@ -76,7 +76,7 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
     return executeQueryTransaction(
         session ->
             session.createQuery(
-                String.format("SELECT %1$s FROM %1$s", persistentClass.getSimpleName()),
+                String.format("SELECT o FROM %1$s o", persistentClass.getSimpleName()),
                 persistentClass));
   }
 
