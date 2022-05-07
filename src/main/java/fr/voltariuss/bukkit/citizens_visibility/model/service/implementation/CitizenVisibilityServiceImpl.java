@@ -63,7 +63,8 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
       @NotNull UUID playerUuid, int citizenId, boolean isCitizenVisible) {
     Preconditions.checkNotNull(playerUuid);
 
-    Optional<CitizenVisibility> citizenVisibility = fetch(playerUuid, citizenId);
+    Optional<CitizenVisibility> citizenVisibility =
+        citizenVisibilityDao.find(playerUuid, citizenId);
 
     if (citizenVisibility.isEmpty()) {
       CitizenVisibility cv = new CitizenVisibility(playerUuid);
