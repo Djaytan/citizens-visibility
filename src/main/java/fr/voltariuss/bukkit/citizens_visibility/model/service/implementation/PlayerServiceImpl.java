@@ -25,6 +25,7 @@ public class PlayerServiceImpl implements PlayerService {
   public void registerOrUpdateName(@NotNull UUID playerUuid, @NotNull String playerName) {
     Preconditions.checkNotNull(playerUuid);
     Preconditions.checkNotNull(playerName);
+    Preconditions.checkArgument(!playerName.isEmpty());
 
     // Remove outdated binding UUID -> name (name must be unique)
     Optional<Player> playerWithName = playerDao.findByName(playerName);
@@ -50,6 +51,11 @@ public class PlayerServiceImpl implements PlayerService {
         playerDao.update(p);
       }
     }
+  }
+
+  @Override
+  public Optional<Player> fetchFromName(@NotNull String playerName) {
+    return playerDao.findByName(playerName);
   }
 
   @Override
