@@ -35,7 +35,6 @@ public class CitizenVisibility {
   private long id;
 
   @Column(name = "cv_player_uuid", nullable = false, unique = true, updatable = false)
-  @Convert(converter = UUIDConverter.class)
   @Setter
   @NonNull
   private UUID playerUuid;

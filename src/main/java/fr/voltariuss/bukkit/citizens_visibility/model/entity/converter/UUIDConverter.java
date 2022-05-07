@@ -18,8 +18,10 @@ package fr.voltariuss.bukkit.citizens_visibility.model.entity.converter;
 
 import java.util.UUID;
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 import org.jetbrains.annotations.Nullable;
 
+@Converter(autoApply = true)
 public class UUIDConverter implements AttributeConverter<UUID, String> {
 
   @Override

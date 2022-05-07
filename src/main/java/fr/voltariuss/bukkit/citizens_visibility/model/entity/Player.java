@@ -30,7 +30,6 @@ public class Player {
 
   @Id
   @Column(name = "cv_player_uuid", nullable = false, unique = true, updatable = false)
-  @Convert(converter = UUIDConverter.class)
   @NonNull
   private UUID playerUuid;
 
