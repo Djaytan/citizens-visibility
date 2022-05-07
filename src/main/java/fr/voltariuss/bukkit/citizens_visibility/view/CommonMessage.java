@@ -1,4 +1,4 @@
-package fr.voltariuss.bukkit.citizens_visibility.view.message;
+package fr.voltariuss.bukkit.citizens_visibility.view;
 
 import java.util.ResourceBundle;
 import javax.inject.Inject;
