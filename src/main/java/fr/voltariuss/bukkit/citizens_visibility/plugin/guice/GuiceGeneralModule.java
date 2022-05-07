@@ -19,7 +19,9 @@ package fr.voltariuss.bukkit.citizens_visibility.plugin.guice;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import fr.voltariuss.bukkit.citizens_visibility.controller.api.CitizenVisibilityController;
 import fr.voltariuss.bukkit.citizens_visibility.controller.api.MessageController;
+import fr.voltariuss.bukkit.citizens_visibility.controller.implementation.CitizenVisibilityControllerImpl;
 import fr.voltariuss.bukkit.citizens_visibility.controller.implementation.MessageControllerImpl;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.CitizenVisibilityService;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.PlayerService;
@@ -34,6 +36,7 @@ public class GuiceGeneralModule extends AbstractModule {
 
   @Override
   public void configure() {
+    bind(CitizenVisibilityController.class).to(CitizenVisibilityControllerImpl.class);
     bind(CitizenVisibilityService.class).to(CitizenVisibilityServiceImpl.class);
     bind(MessageController.class).to(MessageControllerImpl.class);
     bind(PlayerService.class).to(PlayerServiceImpl.class);
