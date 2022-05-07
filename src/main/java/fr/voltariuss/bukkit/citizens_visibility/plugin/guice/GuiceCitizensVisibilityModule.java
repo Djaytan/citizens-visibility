@@ -69,12 +69,17 @@ public class GuiceCitizensVisibilityModule extends AbstractModule {
       Configuration configuration =
           new Configuration()
               .setProperty(AvailableSettings.URL, jdbcUrl)
+              .setProperty(
+                  AvailableSettings.CONNECTION_PROVIDER,
+                  "org.hibernate.hikaricp.internal.HikariCPConnectionProvider")
               .setProperty(AvailableSettings.DRIVER, JDBC.class.getName())
               .setProperty(AvailableSettings.DIALECT, SQLiteDialect.class.getName())
               .setProperty(AvailableSettings.SHOW_SQL, "false")
               .setProperty(AvailableSettings.FORMAT_SQL, "false")
               .setProperty(AvailableSettings.HBM2DDL_AUTO, "update")
               .setProperty(AvailableSettings.HBM2DDL_CHARSET_NAME, "UTF-8")
+              .setProperty("hibernate.hikari.maximumPoolSize", "10")
+              .setProperty("hibernate.hikari.minimumIdle", "5")
               .addAnnotatedClass(CitizenVisibility.class)
               .addAnnotatedClass(Player.class);
 

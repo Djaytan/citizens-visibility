@@ -33,7 +33,7 @@ public class PlayerControllerImpl implements PlayerController {
     PlayerRegisterResponse response = playerService.registerOrUpdateName(playerUuid, playerName);
 
     if (response.responseType() == ResponseType.PLAYER_REGISTERED) {
-      logger.info("Successfully registered player '{}' ('{}')", playerName, playerUuid);
+      logger.info("Successfully registered player '{}' ({})", playerName, playerUuid);
     } else if (response.responseType() == ResponseType.PLAYER_NAME_UPDATED) {
       logger.info(
           "Updated player name from '{}' to '{}'",
