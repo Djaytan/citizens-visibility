@@ -28,6 +28,6 @@ public class PlayerDao extends JpaDao<Player, UUID> {
                     .createQuery(
                         "SELECT p FROM Player p WHERE p.playerName = :playerName", Player.class)
                     .setParameter("playerName", playerName))
-        .uniqueResultOptional();
+        .findFirst();
   }
 }

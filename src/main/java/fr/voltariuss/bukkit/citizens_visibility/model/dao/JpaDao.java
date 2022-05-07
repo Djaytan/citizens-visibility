@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -67,7 +68,7 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
                             persistentClass.getSimpleName()),
                         persistentClass)
                     .setParameter("id", id))
-        .uniqueResultOptional();
+        .findFirst();
   }
 
   @Override
@@ -77,7 +78,7 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
                 session.createQuery(
                     String.format("SELECT %1$s FROM %1$s", persistentClass.getSimpleName()),
                     persistentClass))
-        .list();
+        .toList();
   }
 
   @Override
@@ -110,14 +111,16 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
     }
   }
 
-  protected @NotNull Query<T> executeQueryTransaction(@NotNull Function<Session, Query<T>> action) {
+  protected @NotNull Stream<T> executeQueryTransaction(
+      @NotNull Function<Session, Query<T>> action) {
     Preconditions.checkNotNull(action);
 
     try (Session session = sessionFactory.openSession()) {
+      // TODO: this isn't ideal for performances
       session.beginTransaction();
       Query<T> query = action.apply(session);
       session.getTransaction().commit();
-      return query;
+      return query.getResultStream();
     } catch (RuntimeException e) {
       throw new JpaDaoException("Something went wrong during session", e);
     }

@@ -32,7 +32,7 @@ public class CitizenVisibilityDao extends JpaDao<CitizenVisibility, Long> {
                         CitizenVisibility.class)
                     .setParameter("playerUuid", uuidConverter.convertToDatabaseColumn(playerUuid))
                     .setParameter("citizenId", citizenId))
-        .uniqueResultOptional();
+        .findFirst();
   }
 
   public @NotNull List<CitizenVisibility> findByCitizenId(int citizenId) {
@@ -43,6 +43,6 @@ public class CitizenVisibilityDao extends JpaDao<CitizenVisibility, Long> {
                         "SELECT cv FROM CitizenVisibility cv WHERE cv.citizenId = :citizenId",
                         CitizenVisibility.class)
                     .setParameter("citizenId", citizenId))
-        .list();
+        .toList();
   }
 }
