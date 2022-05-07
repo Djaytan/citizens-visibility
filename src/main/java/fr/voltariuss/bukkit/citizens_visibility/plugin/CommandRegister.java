@@ -17,7 +17,7 @@
 package fr.voltariuss.bukkit.citizens_visibility.plugin;
 
 import co.aikar.commands.PaperCommandManager;
-import fr.voltariuss.bukkit.citizens_visibility.controller.CitizensVisibilityCommand;
+import fr.voltariuss.bukkit.citizens_visibility.controller.command.CitizensVisibilityCommand;
 import java.util.Arrays;
 import javax.inject.Inject;
 import javax.inject.Singleton;
