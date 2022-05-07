@@ -25,7 +25,7 @@ public class PlayerServiceImpl implements PlayerService {
   public void registerOrUpdateName(@NotNull UUID playerUuid, @NotNull String playerName) {
     Preconditions.checkNotNull(playerUuid);
     Preconditions.checkNotNull(playerName);
-    Preconditions.checkArgument(!playerName.isEmpty());
+    Preconditions.checkArgument(!playerName.isBlank());
 
     // Remove outdated binding UUID -> name (name must be unique)
     Optional<Player> playerWithName = playerDao.findByName(playerName);

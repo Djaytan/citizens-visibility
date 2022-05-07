@@ -1,7 +1,6 @@
 package fr.voltariuss.bukkit.citizens_visibility.view.message;
 
 import java.util.ResourceBundle;
-import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.kyori.adventure.text.Component;
@@ -24,14 +23,14 @@ public class CitizenVisibilityMessage {
   }
 
   public @NotNull Component visibilityToggled(
-      @NotNull UUID playerUuid, int citizenId, boolean isCitizenVisible) {
+      @NotNull String playerName, int citizenId, boolean isCitizenVisible) {
     return miniMessage.deserialize(
         resourceBundle.getString("citizen_visibility.message.on_citizen_visibility_toggled"),
         TagResolver.resolver(
             Placeholder.unparsed("cv_citizen_id", Integer.toString(citizenId)),
             Placeholder.component(
                 "cv_citizen_visibility", citizenVisibilityState(isCitizenVisible)),
-            Placeholder.unparsed("cv_player_uuid", playerUuid.toString())));
+            Placeholder.unparsed("cv_player_name", playerName)));
   }
 
   public @NotNull Component visibilityToggledForAllPlayers(
@@ -46,14 +45,14 @@ public class CitizenVisibilityMessage {
   }
 
   public @NotNull Component visibilityNotChanged(
-      @NotNull UUID playerUuid, int citizenId, boolean isCitizenVisible) {
+      @NotNull String playerName, int citizenId, boolean isCitizenVisible) {
     return miniMessage.deserialize(
         resourceBundle.getString("citizen_visibility.message.citizen_visibility_not_changed"),
         TagResolver.resolver(
             Placeholder.unparsed("cv_citizen_id", Integer.toString(citizenId)),
             Placeholder.component(
                 "cv_citizen_visibility", citizenVisibilityState(isCitizenVisible)),
-            Placeholder.unparsed("cv_player_uuid", playerUuid.toString())));
+            Placeholder.unparsed("cv_player_name", playerName)));
   }
 
   private @NotNull Component citizenVisibilityState(boolean isCitizenVisible) {
