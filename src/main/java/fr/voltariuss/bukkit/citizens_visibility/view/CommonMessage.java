@@ -31,8 +31,8 @@ public class CommonMessage {
   public @NotNull Component playerNotFound(String playerName) {
     return miniMessage
         .deserialize(
-            resourceBundle.getString("diagonia.common.fail.player_not_found"),
-            TagResolver.resolver(Placeholder.unparsed("diag_player_name", playerName)))
+            resourceBundle.getString("citizen_visibility.common.fail.player_not_found"),
+            TagResolver.resolver(Placeholder.unparsed("cv_player_name", playerName)))
         .decoration(TextDecoration.ITALIC, false);
   }
 }
