@@ -2,8 +2,7 @@ package fr.voltariuss.bukkit.citizens_visibility.model.service.api;
 
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.CitizenVisibility;
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.Player;
-import fr.voltariuss.bukkit.citizens_visibility.model.service.api.response.CitizenVisibilityFetchResponse;
-import fr.voltariuss.bukkit.citizens_visibility.model.service.api.response.CitizenVisibilityResponse;
+import java.util.Optional;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,47 +30,40 @@ public interface CitizenVisibilityService {
    *
    * @param playerUuid The concerning player's UUID.
    * @param citizenId The targeted citizen's ID.
-   * @return A response which may contains the sought value and specify whether the action has been
-   *     realized successfully or not.
+   * @return The optional citizen visibility.
    */
   @NotNull
-  CitizenVisibilityFetchResponse find(@NotNull UUID playerUuid, int citizenId);
+  Optional<CitizenVisibility> find(@NotNull UUID playerUuid, int citizenId);
 
   /**
    * Hides the targeted citizen for the given player's UUID.
    *
    * @param playerUuid The concerning player's UUID.
    * @param citizenId The targeted citizen.
-   * @return A response which specify whether the action has been realized successfully or not.
    */
-  @NotNull
-  CitizenVisibilityResponse hideCitizen(@NotNull UUID playerUuid, int citizenId);
+  void hideCitizen(@NotNull UUID playerUuid, int citizenId);
 
   /**
    * Hides the targeted citizen for all registered {@link Player}s.
    *
    * @param citizenId The targeted citizen.
-   * @return A response which specify whether the action has been realized successfully or not.
+   * @return A response which specify whether the action has been realized successfully or not and
+   *     the update citizen visibility value.
    */
-  @NotNull
-  CitizenVisibilityResponse hideCitizenForAllPlayers(int citizenId);
+  void hideCitizenForAllPlayers(int citizenId);
 
   /**
    * Shows the targeted citizen for the given player's UUID.
    *
    * @param playerUuid The concerning player's UUID.
    * @param citizenId The targeted citizen.
-   * @return A response which specify whether the action has been realized successfully or not.
    */
-  @NotNull
-  CitizenVisibilityResponse showCitizen(@NotNull UUID playerUuid, int citizenId);
+  void showCitizen(@NotNull UUID playerUuid, int citizenId);
 
   /**
    * Shows the targeted citizen for all registered {@link Player}s.
    *
    * @param citizenId The targeted citizen.
-   * @return A response which specify whether the action has been realized successfully or not.
    */
-  @NotNull
-  CitizenVisibilityResponse showCitizenForAllPlayers(int citizenId);
+  void showCitizenForAllPlayers(int citizenId);
 }
