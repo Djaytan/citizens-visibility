@@ -73,6 +73,7 @@ public class GuiceCitizensVisibilityModule extends AbstractModule {
                   AvailableSettings.CONNECTION_PROVIDER,
                   "org.hibernate.hikaricp.internal.HikariCPConnectionProvider")
               .setProperty(AvailableSettings.DRIVER, JDBC.class.getName())
+              .setProperty(AvailableSettings.DATASOURCE, "org.sqlite.SQLiteDataSource")
               .setProperty(AvailableSettings.DIALECT, SQLiteDialect.class.getName())
               .setProperty(AvailableSettings.SHOW_SQL, "false")
               .setProperty(AvailableSettings.FORMAT_SQL, "false")
