@@ -22,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author Voltariuss
  */
+// TODO: manage case of default citizen visibility when new player connect
+// TODO: possibility to only change the default visibility for a citizen without impacting players'
 public interface CitizenVisibilityService {
 
   /**
