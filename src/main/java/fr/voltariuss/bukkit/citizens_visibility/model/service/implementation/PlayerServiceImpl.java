@@ -22,14 +22,33 @@ public class PlayerServiceImpl implements PlayerService {
   }
 
   @Override
-  public void registerIfNotExists(@NotNull UUID playerUuid) {
+  public void registerOrUpdateName(@NotNull UUID playerUuid, @NotNull String playerName) {
     Preconditions.checkNotNull(playerUuid);
+    Preconditions.checkNotNull(playerName);
+
+    // Remove outdated binding UUID -> name (name must be unique)
+    Optional<Player> playerWithName = playerDao.findByName(playerName);
+    playerWithName.ifPresent(
+        p -> {
+          p.playerName(null);
+          playerDao.update(p);
+        });
 
     Optional<Player> player = playerDao.findById(playerUuid);
 
     if (player.isEmpty()) {
-      Player p = new Player(playerUuid);
+      Player p = new Player(playerUuid, playerName);
       playerDao.persist(p);
+    } else {
+      String fetchedPlayerName = player.get().playerName();
+
+      // According to CraftBukkit sources, cases aren't taken into account for player names
+      // See UserCache#get(String) method
+      if (fetchedPlayerName != null && !fetchedPlayerName.equals(playerName)) {
+        Player p = player.get();
+        p.playerName(playerName);
+        playerDao.update(p);
+      }
     }
   }
 

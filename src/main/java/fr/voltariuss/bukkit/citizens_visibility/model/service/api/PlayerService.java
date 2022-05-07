@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public interface PlayerService {
 
   // TODO: experiment CompletableFutur here
-  void registerIfNotExists(@NotNull UUID playerUuid);
+  void registerOrUpdateName(@NotNull UUID playerUuid, @NotNull String playerName);
 
   @NotNull
   List<Player> fetchAll();

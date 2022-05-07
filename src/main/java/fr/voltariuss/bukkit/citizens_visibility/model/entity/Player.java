@@ -8,13 +8,15 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 
 @Entity
 @Table(name = "citizen_visibility_player")
@@ -23,7 +25,7 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true, chain = true, makeFinal = true)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Player {
 
   @Id
@@ -31,4 +33,9 @@ public class Player {
   @Convert(converter = UUIDConverter.class)
   @NonNull
   private UUID playerUuid;
+
+  @Column(name = "cv_player_name")
+  @Setter
+  @Nullable
+  private String playerName;
 }
