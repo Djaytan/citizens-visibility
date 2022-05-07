@@ -2,6 +2,7 @@ package fr.voltariuss.bukkit.citizens_visibility.model.service.api;
 
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.CitizenVisibility;
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.Player;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +34,16 @@ public interface CitizenVisibilityService {
    * @return The optional citizen visibility.
    */
   @NotNull
-  Optional<CitizenVisibility> find(@NotNull UUID playerUuid, int citizenId);
+  Optional<CitizenVisibility> fetch(@NotNull UUID playerUuid, int citizenId);
+
+  /**
+   * Searches and provides the citizen's visibility for all registered players.
+   *
+   * @param citizenId The citizen ID.
+   * @return The list of citizen's visibility of each registered player.
+   */
+  @NotNull
+  List<CitizenVisibility> fetchAll(int citizenId);
 
   /**
    * Hides the targeted citizen for the given player's UUID.

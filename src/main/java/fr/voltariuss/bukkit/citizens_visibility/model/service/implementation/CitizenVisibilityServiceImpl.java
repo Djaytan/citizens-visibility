@@ -28,10 +28,15 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
   }
 
   @Override
-  public @NotNull Optional<CitizenVisibility> find(@NotNull UUID playerUuid, int citizenId) {
+  public @NotNull Optional<CitizenVisibility> fetch(@NotNull UUID playerUuid, int citizenId) {
     Preconditions.checkNotNull(playerUuid);
 
     return citizenVisibilityDao.find(playerUuid, citizenId);
+  }
+
+  @Override
+  public @NotNull List<CitizenVisibility> fetchAll(int citizenId) {
+    return citizenVisibilityDao.findByCitizenId(citizenId);
   }
 
   @Override
@@ -58,7 +63,7 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
       @NotNull UUID playerUuid, int citizenId, boolean isCitizenVisible) {
     Preconditions.checkNotNull(playerUuid);
 
-    Optional<CitizenVisibility> citizenVisibility = find(playerUuid, citizenId);
+    Optional<CitizenVisibility> citizenVisibility = fetch(playerUuid, citizenId);
 
     if (citizenVisibility.isEmpty()) {
       CitizenVisibility cv = new CitizenVisibility(playerUuid);
