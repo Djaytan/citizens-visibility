@@ -11,6 +11,9 @@ public class CitizensVisibilityPlugin extends JavaPlugin {
 
   @Override
   public void onEnable() {
+    getSLF4JLogger().info("SQLite database initialization");
+    SQLiteInitializer.init(getDataFolder().toPath());
+
     getSLF4JLogger().info("Guice injection");
     GuiceInjector.inject(this);
 

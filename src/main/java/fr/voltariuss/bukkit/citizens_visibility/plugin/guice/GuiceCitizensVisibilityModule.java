@@ -21,6 +21,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import fr.voltariuss.bukkit.citizens_visibility.CitizensVisibilityRuntimeException;
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.CitizenVisibility;
+import fr.voltariuss.bukkit.citizens_visibility.model.entity.Player;
 import java.nio.file.Path;
 import javax.inject.Named;
 import org.hibernate.HibernateException;
@@ -30,7 +31,6 @@ import org.hibernate.cfg.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.sqlite.JDBC;
-import org.sqlite.SQLiteDataSource;
 import org.sqlite.hibernate.dialect.SQLiteDialect;
 
 public class GuiceCitizensVisibilityModule extends AbstractModule {
@@ -38,10 +38,11 @@ public class GuiceCitizensVisibilityModule extends AbstractModule {
   private final Logger logger;
   private final String jdbcUrl;
 
-  public GuiceCitizensVisibilityModule(@NotNull Logger logger, Path pluginDataSourcePath) {
+  public GuiceCitizensVisibilityModule(@NotNull Logger logger, @NotNull Path pluginDataSourcePath) {
     this.logger = logger;
 
     Path sqliteDatabaseFile = pluginDataSourcePath.resolve("data.db");
+
     this.jdbcUrl = "jdbc:sqlite:" + sqliteDatabaseFile;
   }
 
@@ -69,14 +70,13 @@ public class GuiceCitizensVisibilityModule extends AbstractModule {
           new Configuration()
               .setProperty(AvailableSettings.URL, jdbcUrl)
               .setProperty(AvailableSettings.DRIVER, JDBC.class.getName())
-              .setProperty(AvailableSettings.DATASOURCE, SQLiteDataSource.class.getName())
               .setProperty(AvailableSettings.DIALECT, SQLiteDialect.class.getName())
               .setProperty(AvailableSettings.SHOW_SQL, "false")
               .setProperty(AvailableSettings.FORMAT_SQL, "false")
               .setProperty(AvailableSettings.HBM2DDL_AUTO, "update")
               .setProperty(AvailableSettings.HBM2DDL_CHARSET_NAME, "UTF-8")
               .addAnnotatedClass(CitizenVisibility.class)
-              .configure();
+              .addAnnotatedClass(Player.class);
 
       logger.info("Database connexion established (SQLite).");
       return configuration.buildSessionFactory();
