@@ -21,8 +21,10 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import fr.voltariuss.bukkit.citizens_visibility.controller.api.CitizenVisibilityController;
 import fr.voltariuss.bukkit.citizens_visibility.controller.api.MessageController;
+import fr.voltariuss.bukkit.citizens_visibility.controller.api.PlayerController;
 import fr.voltariuss.bukkit.citizens_visibility.controller.implementation.CitizenVisibilityControllerImpl;
 import fr.voltariuss.bukkit.citizens_visibility.controller.implementation.MessageControllerImpl;
+import fr.voltariuss.bukkit.citizens_visibility.controller.implementation.PlayerControllerImpl;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.CitizenVisibilityService;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.PlayerService;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.implementation.CitizenVisibilityServiceImpl;
@@ -39,6 +41,7 @@ public class GuiceGeneralModule extends AbstractModule {
     bind(CitizenVisibilityController.class).to(CitizenVisibilityControllerImpl.class);
     bind(CitizenVisibilityService.class).to(CitizenVisibilityServiceImpl.class);
     bind(MessageController.class).to(MessageControllerImpl.class);
+    bind(PlayerController.class).to(PlayerControllerImpl.class);
     bind(PlayerService.class).to(PlayerServiceImpl.class);
   }
 

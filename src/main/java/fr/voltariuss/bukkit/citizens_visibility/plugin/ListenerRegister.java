@@ -16,6 +16,7 @@
 
 package fr.voltariuss.bukkit.citizens_visibility.plugin;
 
+import fr.voltariuss.bukkit.citizens_visibility.controller.listener.PlayerJoinListener;
 import javax.inject.Inject;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -25,12 +26,19 @@ public class ListenerRegister {
 
   private final Plugin plugin;
   private final PluginManager pluginManager;
+  private final PlayerJoinListener playerJoinListener;
 
   @Inject
-  public ListenerRegister(@NotNull Plugin plugin, @NotNull PluginManager pluginManager) {
+  public ListenerRegister(
+      @NotNull Plugin plugin,
+      @NotNull PluginManager pluginManager,
+      @NotNull PlayerJoinListener playerJoinListener) {
     this.plugin = plugin;
     this.pluginManager = pluginManager;
+    this.playerJoinListener = playerJoinListener;
   }
 
-  public void registerListeners() {}
+  public void registerListeners() {
+    pluginManager.registerEvents(playerJoinListener, plugin);
+  }
 }
