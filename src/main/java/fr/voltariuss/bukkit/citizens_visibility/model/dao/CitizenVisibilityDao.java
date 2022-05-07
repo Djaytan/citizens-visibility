@@ -27,17 +27,17 @@ public class CitizenVisibilityDao extends JpaDao<CitizenVisibility, Long> {
                         CitizenVisibility.class)
                     .setParameter("playerUuid", playerUuid)
                     .setParameter("citizenId", citizenId))
+        .stream()
         .findFirst();
   }
 
   public @NotNull List<CitizenVisibility> findByCitizenId(int citizenId) {
     return executeQueryTransaction(
-            session ->
-                session
-                    .createQuery(
-                        "SELECT cv FROM CitizenVisibility cv WHERE cv.citizenId = :citizenId",
-                        CitizenVisibility.class)
-                    .setParameter("citizenId", citizenId))
-        .toList();
+        session ->
+            session
+                .createQuery(
+                    "SELECT cv FROM CitizenVisibility cv WHERE cv.citizenId = :citizenId",
+                    CitizenVisibility.class)
+                .setParameter("citizenId", citizenId));
   }
 }
