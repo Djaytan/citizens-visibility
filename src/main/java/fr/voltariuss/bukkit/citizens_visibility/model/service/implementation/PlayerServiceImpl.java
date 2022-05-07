@@ -30,14 +30,6 @@ public class PlayerServiceImpl implements PlayerService {
     Preconditions.checkNotNull(playerName);
     Preconditions.checkArgument(!playerName.isBlank());
 
-    // Remove outdated binding UUID -> name (name must be unique)
-    Optional<Player> playerWithName = playerDao.findByName(playerName);
-    playerWithName.ifPresent(
-        p -> {
-          p.playerName(null);
-          playerDao.update(p);
-        });
-
     Optional<Player> player = playerDao.findById(playerUuid);
 
     if (player.isEmpty()) {
@@ -51,9 +43,19 @@ public class PlayerServiceImpl implements PlayerService {
     // According to CraftBukkit sources, cases aren't taken into account for player names
     // See UserCache#get(String) method
     if (fetchedPlayerName != null && !fetchedPlayerName.equals(playerName)) {
+
+      // Remove outdated binding UUID -> name (name must be unique)
+      Optional<Player> playerWithName = playerDao.findByName(playerName);
+      playerWithName.ifPresent(
+          p -> {
+            p.playerName(null);
+            playerDao.update(p);
+          });
+
       Player p = player.get();
       p.playerName(playerName);
       playerDao.update(p);
+
       return PlayerRegisterResponse.builder()
           .responseType(ResponseType.PLAYER_NAME_UPDATED)
           .oldPlayerName(fetchedPlayerName)
