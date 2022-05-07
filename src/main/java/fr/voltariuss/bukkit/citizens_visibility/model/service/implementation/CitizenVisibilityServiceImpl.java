@@ -74,7 +74,7 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
   }
 
   @Override
-  public @NotNull CitizenVisibilityResponse hideCitizen(int citizenId) {
+  public @NotNull CitizenVisibilityResponse hideCitizenForAllPlayers(int citizenId) {
     return toggleCitizenVisibility(citizenId, false);
   }
 
@@ -84,7 +84,7 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
   }
 
   @Override
-  public @NotNull CitizenVisibilityResponse showCitizen(int citizenId) {
+  public @NotNull CitizenVisibilityResponse showCitizenForAllPlayers(int citizenId) {
     return toggleCitizenVisibility(citizenId, true);
   }
 

@@ -52,7 +52,7 @@ public interface CitizenVisibilityService {
    * @return A response which specify whether the action has been realized successfully or not.
    */
   @NotNull
-  CitizenVisibilityResponse hideCitizen(int citizenId);
+  CitizenVisibilityResponse hideCitizenForAllPlayers(int citizenId);
 
   /**
    * Shows the targeted citizen for the given player's UUID.
@@ -71,5 +71,5 @@ public interface CitizenVisibilityService {
    * @return A response which specify whether the action has been realized successfully or not.
    */
   @NotNull
-  CitizenVisibilityResponse showCitizen(int citizenId);
+  CitizenVisibilityResponse showCitizenForAllPlayers(int citizenId);
 }
