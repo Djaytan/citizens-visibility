@@ -1,4 +1,4 @@
-package fr.voltariuss.bukkit.citizens_visibility.controller.listener;
+package fr.voltariuss.bukkit.citizens_visibility.controller.listener.bukkit;
 
 import fr.voltariuss.bukkit.citizens_visibility.controller.api.PlayerController;
 import javax.inject.Inject;
