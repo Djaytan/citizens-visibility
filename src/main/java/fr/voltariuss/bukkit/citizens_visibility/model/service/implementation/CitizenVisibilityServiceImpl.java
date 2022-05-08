@@ -46,7 +46,7 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
 
   @Override
   public void hideCitizenForAllPlayers(int citizenId) {
-    toggleCitizenVisibility(citizenId, false);
+    toggleCitizenVisibilityForAllPlayers(citizenId, false);
   }
 
   @Override
@@ -56,7 +56,7 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
 
   @Override
   public void showCitizenForAllPlayers(int citizenId) {
-    toggleCitizenVisibility(citizenId, true);
+    toggleCitizenVisibilityForAllPlayers(citizenId, true);
   }
 
   @Override
@@ -86,7 +86,7 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
     }
   }
 
-  private void toggleCitizenVisibility(int citizenId, boolean isCitizenVisible) {
+  private void toggleCitizenVisibilityForAllPlayers(int citizenId, boolean isCitizenVisible) {
     List<Player> players = playerService.fetchAll();
 
     List<CitizenVisibility> citizenVisibilities = new ArrayList<>(players.size());
@@ -95,13 +95,15 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
       UUID playerUuid = player.playerUuid();
       Optional<CitizenVisibility> fetchedCv = citizenVisibilityDao.find(playerUuid, citizenId);
 
-      if (fetchedCv.isEmpty()) {
-        CitizenVisibility citizenVisibility = new CitizenVisibility(playerUuid);
-        citizenVisibility.citizenId(citizenId);
-        citizenVisibility.isCitizenVisible(isCitizenVisible);
-        citizenVisibilityDao.persist(citizenVisibility);
-        citizenVisibilities.add(citizenVisibility);
+      if (fetchedCv.isPresent()) {
+        citizenVisibilities.add(fetchedCv.get());
+        continue;
       }
+
+      CitizenVisibility citizenVisibility = new CitizenVisibility(playerUuid);
+      citizenVisibility.citizenId(citizenId);
+      citizenVisibility.isCitizenVisible(isCitizenVisible);
+      citizenVisibilityDao.persist(citizenVisibility);
     }
 
     for (CitizenVisibility citizenVisibility : citizenVisibilities) {
