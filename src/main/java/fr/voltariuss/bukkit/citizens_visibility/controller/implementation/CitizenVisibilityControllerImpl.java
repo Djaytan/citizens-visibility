@@ -148,13 +148,6 @@ public class CitizenVisibilityControllerImpl implements CitizenVisibilityControl
       return Optional.of(onlinePlayer.getUniqueId());
     }
 
-    // Search through user cache's server
-    OfflinePlayer offlinePlayer = server.getOfflinePlayerIfCached(playerName);
-
-    if (offlinePlayer != null) {
-      return Optional.of(offlinePlayer.getUniqueId());
-    }
-
     // Search through plugin's data source
     Optional<Player> player = playerService.fetchFromName(playerName);
 
