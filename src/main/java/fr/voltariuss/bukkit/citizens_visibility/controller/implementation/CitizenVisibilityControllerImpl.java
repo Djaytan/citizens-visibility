@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.kyori.adventure.audience.Audience;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -76,11 +78,19 @@ public class CitizenVisibilityControllerImpl implements CitizenVisibilityControl
     Optional<UUID> playerUuidOptional = uuidFromPlayerName(playerName);
 
     if (playerUuidOptional.isEmpty()) {
-      messageController.sendErrorMessage(audience, commonMessage.playerNotFound(playerName));
+      messageController.sendFailureMessage(audience, commonMessage.playerNotFound(playerName));
       return;
     }
 
     UUID playerUuid = playerUuidOptional.get();
+
+    NPC npc = CitizensAPI.getNPCRegistry().getById(citizenId);
+
+    if (npc == null) {
+      messageController.sendFailureMessage(
+          audience, citizenVisibilityMessage.citizenNotFound(citizenId));
+      return;
+    }
 
     Optional<CitizenVisibility> citizenVisibility =
         citizenVisibilityService.fetch(playerUuid, citizenId);
@@ -89,7 +99,8 @@ public class CitizenVisibilityControllerImpl implements CitizenVisibilityControl
         && citizenVisibility.get().isCitizenVisible() == isCitizenVisible) {
       messageController.sendFailureMessage(
           audience,
-          citizenVisibilityMessage.visibilityNotChanged(playerName, citizenId, isCitizenVisible));
+          citizenVisibilityMessage.visibilityNotChanged(
+              playerName, citizenId, npc.getName(), isCitizenVisible));
       return;
     }
 
@@ -101,12 +112,21 @@ public class CitizenVisibilityControllerImpl implements CitizenVisibilityControl
 
     messageController.sendInfoMessage(
         audience,
-        citizenVisibilityMessage.visibilityToggled(playerName, citizenId, isCitizenVisible));
+        citizenVisibilityMessage.visibilityToggled(
+            playerName, citizenId, npc.getName(), isCitizenVisible));
   }
 
   private void toggleCitizenVisibilityForAllPlayers(
       @NotNull Audience audience, int citizenId, boolean isCitizenVisible) {
     Preconditions.checkNotNull(audience);
+
+    NPC npc = CitizensAPI.getNPCRegistry().getById(citizenId);
+
+    if (npc == null) {
+      messageController.sendFailureMessage(
+          audience, citizenVisibilityMessage.citizenNotFound(citizenId));
+      return;
+    }
 
     if (isCitizenVisible) {
       citizenVisibilityService.showCitizenForAllPlayers(citizenId);
@@ -116,7 +136,8 @@ public class CitizenVisibilityControllerImpl implements CitizenVisibilityControl
 
     messageController.sendInfoMessage(
         audience,
-        citizenVisibilityMessage.visibilityToggledForAllPlayers(citizenId, isCitizenVisible));
+        citizenVisibilityMessage.visibilityToggledForAllPlayers(
+            citizenId, npc.getName(), isCitizenVisible));
   }
 
   private @NotNull Optional<UUID> uuidFromPlayerName(@NotNull String playerName) {

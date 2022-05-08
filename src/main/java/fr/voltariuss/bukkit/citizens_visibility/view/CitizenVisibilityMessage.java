@@ -23,33 +23,42 @@ public class CitizenVisibilityMessage {
   }
 
   public @NotNull Component visibilityToggled(
-      @NotNull String playerName, int citizenId, boolean isCitizenVisible) {
+      @NotNull String playerName,
+      int citizenId,
+      @NotNull String citizenName,
+      boolean isCitizenVisible) {
     return miniMessage.deserialize(
         resourceBundle.getString("citizen_visibility.message.on_citizen_visibility_toggled"),
         TagResolver.resolver(
             Placeholder.unparsed("cv_citizen_id", Integer.toString(citizenId)),
+            Placeholder.unparsed("cv_citizen_name", citizenName),
             Placeholder.component(
                 "cv_citizen_visibility", citizenVisibilityState(isCitizenVisible)),
             Placeholder.unparsed("cv_player_name", playerName)));
   }
 
   public @NotNull Component visibilityToggledForAllPlayers(
-      int citizenId, boolean isCitizenVisible) {
+      int citizenId, @NotNull String citizenName, boolean isCitizenVisible) {
     return miniMessage.deserialize(
         resourceBundle.getString(
             "citizen_visibility.message.on_citizen_visibility_toggled_for_all_players"),
         TagResolver.resolver(
             Placeholder.unparsed("cv_citizen_id", Integer.toString(citizenId)),
+            Placeholder.unparsed("cv_citizen_name", citizenName),
             Placeholder.component(
                 "cv_citizen_visibility", citizenVisibilityState(isCitizenVisible))));
   }
 
   public @NotNull Component visibilityNotChanged(
-      @NotNull String playerName, int citizenId, boolean isCitizenVisible) {
+      @NotNull String playerName,
+      int citizenId,
+      @NotNull String citizenName,
+      boolean isCitizenVisible) {
     return miniMessage.deserialize(
         resourceBundle.getString("citizen_visibility.message.citizen_visibility_not_changed"),
         TagResolver.resolver(
             Placeholder.unparsed("cv_citizen_id", Integer.toString(citizenId)),
+            Placeholder.unparsed("cv_citizen_name", citizenName),
             Placeholder.component(
                 "cv_citizen_visibility", citizenVisibilityState(isCitizenVisible)),
             Placeholder.unparsed("cv_player_name", playerName)));
