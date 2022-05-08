@@ -13,6 +13,8 @@ public interface PlayerService {
   @NotNull
   PlayerRegisterResponse registerOrUpdateName(@NotNull UUID playerUuid, @NotNull String playerName);
 
+  Optional<Player> fetchFromId(@NotNull UUID playerUuid);
+
   Optional<Player> fetchFromName(@NotNull String playerName);
 
   @NotNull

@@ -67,6 +67,11 @@ public class PlayerServiceImpl implements PlayerService {
   }
 
   @Override
+  public Optional<Player> fetchFromId(@NotNull UUID playerUuid) {
+    return playerDao.findById(playerUuid);
+  }
+
+  @Override
   public Optional<Player> fetchFromName(@NotNull String playerName) {
     return playerDao.findByName(playerName);
   }
