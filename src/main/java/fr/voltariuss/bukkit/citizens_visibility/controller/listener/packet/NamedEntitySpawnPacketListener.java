@@ -14,12 +14,12 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 @Singleton
-public class SpawnLivingEntityPacketListener extends PacketAdapter {
+public class NamedEntitySpawnPacketListener extends PacketAdapter {
 
   private final CitizenVisibilityService citizenVisibilityService;
 
   @Inject
-  public SpawnLivingEntityPacketListener(
+  public NamedEntitySpawnPacketListener(
       @NotNull Plugin plugin, @NotNull CitizenVisibilityService citizenVisibilityService) {
     super(plugin, ListenerPriority.HIGHEST, Server.NAMED_ENTITY_SPAWN);
     this.citizenVisibilityService = citizenVisibilityService;

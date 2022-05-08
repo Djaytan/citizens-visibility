@@ -1,7 +1,7 @@
 package fr.voltariuss.bukkit.citizens_visibility.plugin;
 
 import com.comphenix.protocol.ProtocolManager;
-import fr.voltariuss.bukkit.citizens_visibility.controller.listener.packet.SpawnLivingEntityPacketListener;
+import fr.voltariuss.bukkit.citizens_visibility.controller.listener.packet.NamedEntitySpawnPacketListener;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -10,17 +10,17 @@ import org.jetbrains.annotations.NotNull;
 public class PacketListenerRegister {
 
   private final ProtocolManager protocolManager;
-  private final SpawnLivingEntityPacketListener spawnLivingEntityPacketListener;
+  private final NamedEntitySpawnPacketListener namedEntitySpawnPacketListener;
 
   @Inject
   public PacketListenerRegister(
       @NotNull ProtocolManager protocolManager,
-      @NotNull SpawnLivingEntityPacketListener spawnLivingEntityPacketListener) {
+      @NotNull NamedEntitySpawnPacketListener namedEntitySpawnPacketListener) {
     this.protocolManager = protocolManager;
-    this.spawnLivingEntityPacketListener = spawnLivingEntityPacketListener;
+    this.namedEntitySpawnPacketListener = namedEntitySpawnPacketListener;
   }
 
   public void registerListeners() {
-    protocolManager.addPacketListener(spawnLivingEntityPacketListener);
+    protocolManager.addPacketListener(namedEntitySpawnPacketListener);
   }
 }
