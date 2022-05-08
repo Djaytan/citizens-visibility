@@ -73,4 +73,10 @@ public class CitizenVisibilityMessage {
 
     return miniMessage.deserialize(resourceBundle.getString(messageKey));
   }
+
+  public @NotNull Component citizenNotFound(int citizenId) {
+    return miniMessage.deserialize(
+        resourceBundle.getString("citizen_visibility.message.citizen_not_found"),
+        TagResolver.resolver(Placeholder.unparsed("cv_citizen_id", Integer.toString(citizenId))));
+  }
 }
