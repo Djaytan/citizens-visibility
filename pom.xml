@@ -52,6 +52,10 @@
       <id>aikar</id>
       <url>https://repo.aikar.co/content/groups/aikar/</url>
     </repository>
+    <repository>
+      <id>everything</id>
+      <url>https://repo.citizensnpcs.co/</url>
+    </repository>
   </repositories>
 
   <build>
@@ -167,6 +171,19 @@
       <artifactId>acf-paper</artifactId>
       <version>${acf.version}</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.comphenix.protocol</groupId>
+      <artifactId>ProtocolLib</artifactId>
+      <version>4.8.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.citizensnpcs</groupId>
+      <artifactId>citizens-main</artifactId>
+      <version>2.0.29-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Java dependencies -->

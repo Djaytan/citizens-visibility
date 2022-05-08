@@ -17,6 +17,9 @@
 package fr.voltariuss.bukkit.citizens_visibility.plugin.guice;
 
 import co.aikar.commands.PaperCommandManager;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketAdapter;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -47,5 +50,11 @@ public class GuiceBukkitLibsModule extends AbstractModule {
     manager.addSupportedLanguage(Locale.FRANCE);
     manager.getLocales().setDefaultLocale(Locale.FRANCE);
     return manager;
+  }
+
+  @Provides
+  @Singleton
+  public @NotNull ProtocolManager provideProtocolManager() {
+    return ProtocolLibrary.getProtocolManager();
   }
 }
