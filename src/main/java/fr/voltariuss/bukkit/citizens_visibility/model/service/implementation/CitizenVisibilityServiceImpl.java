@@ -59,6 +59,14 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
     toggleCitizenVisibility(citizenId, true);
   }
 
+  @Override
+  public boolean isCitizenVisibleForPlayer(@NotNull UUID playerUuid, int citizenId) {
+    Optional<CitizenVisibility> citizenVisibility =
+        citizenVisibilityDao.find(playerUuid, citizenId);
+    // TODO: default visibility value
+    return citizenVisibility.isEmpty() || citizenVisibility.get().isCitizenVisible();
+  }
+
   private void toggleCitizenVisibility(
       @NotNull UUID playerUuid, int citizenId, boolean isCitizenVisible) {
     Preconditions.checkNotNull(playerUuid);

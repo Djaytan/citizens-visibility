@@ -74,4 +74,14 @@ public interface CitizenVisibilityService {
    * @param citizenId The targeted citizen.
    */
   void showCitizenForAllPlayers(int citizenId);
+
+  /**
+   * Checks if the specified citizen is visible for the given player.
+   *
+   * @param playerUuid The player's UUID.
+   * @param citizenId The citizen's ID.
+   * @return <code>true</code> if the citizen is visible for the given player, <code>false</code>
+   *     otherwise.
+   */
+  boolean isCitizenVisibleForPlayer(@NotNull UUID playerUuid, int citizenId);
 }
