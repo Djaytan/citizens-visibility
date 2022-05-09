@@ -46,6 +46,14 @@ public interface CitizenVisibilityService {
   List<CitizenVisibility> fetchAll(int citizenId);
 
   /**
+   * Defines the default visibility for the given citizen.
+   *
+   * @param citizenId The citizen's ID.
+   * @param isVisibleByDefault The default visibility to define for the given citizen.
+   */
+  void defineDefaultVisibility(int citizenId, boolean isVisibleByDefault);
+
+  /**
    * Registers default visibilities of NPCs for the specified player.
    *
    * <p>By default, a default value not override an existing one. However, it's possible to force

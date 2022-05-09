@@ -46,6 +46,26 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
   }
 
   @Override
+  public void defineDefaultVisibility(int citizenId, boolean isVisibleByDefault) {
+    Optional<DefaultCitizenVisibility> defaultCitizenVisibility =
+        defaultCitizenVisibilityDao.findByCitizenId(citizenId);
+
+    if (defaultCitizenVisibility.isPresent()) {
+      DefaultCitizenVisibility dcv = defaultCitizenVisibility.get();
+      dcv.setVisibleByDefault(isVisibleByDefault);
+      defaultCitizenVisibilityDao.update(dcv);
+      return;
+    }
+
+    DefaultCitizenVisibility dcv =
+        DefaultCitizenVisibility.builder()
+            .citizenId(citizenId)
+            .isVisibleByDefault(isVisibleByDefault)
+            .build();
+    defaultCitizenVisibilityDao.persist(dcv);
+  }
+
+  @Override
   public void registerDefaultVisibilities(@NotNull UUID playerUuid, boolean forceDefault) {
     Preconditions.checkNotNull(playerUuid);
 

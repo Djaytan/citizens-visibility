@@ -7,18 +7,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Table(name = "cv_default_citizen_visibility")
 @ToString
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class DefaultCitizenVisibility {
 
   @Id
@@ -26,6 +29,7 @@ public class DefaultCitizenVisibility {
   @Column(name = "cv_id", nullable = false, updatable = false)
   private long id;
 
+  @NaturalId
   @Column(name = "cv_citizen_id")
   @Setter
   private int citizenId;
