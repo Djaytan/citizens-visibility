@@ -2,7 +2,9 @@ package fr.voltariuss.bukkit.citizens_visibility.model.service.implementation;
 
 import com.google.common.base.Preconditions;
 import fr.voltariuss.bukkit.citizens_visibility.model.dao.CitizenVisibilityDao;
+import fr.voltariuss.bukkit.citizens_visibility.model.dao.DefaultCitizenVisibilityDao;
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.CitizenVisibility;
+import fr.voltariuss.bukkit.citizens_visibility.model.entity.DefaultCitizenVisibility;
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.Player;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.CitizenVisibilityService;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.PlayerService;
@@ -18,12 +20,16 @@ import org.jetbrains.annotations.NotNull;
 public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
 
   private final CitizenVisibilityDao citizenVisibilityDao;
+  private final DefaultCitizenVisibilityDao defaultCitizenVisibilityDao;
   private final PlayerService playerService;
 
   @Inject
   public CitizenVisibilityServiceImpl(
-      @NotNull CitizenVisibilityDao citizenVisibilityDao, @NotNull PlayerService playerService) {
+      @NotNull CitizenVisibilityDao citizenVisibilityDao,
+      @NotNull DefaultCitizenVisibilityDao defaultCitizenVisibilityDao,
+      @NotNull PlayerService playerService) {
     this.citizenVisibilityDao = citizenVisibilityDao;
+    this.defaultCitizenVisibilityDao = defaultCitizenVisibilityDao;
     this.playerService = playerService;
   }
 
@@ -37,6 +43,34 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
   @Override
   public @NotNull List<CitizenVisibility> fetchAll(int citizenId) {
     return citizenVisibilityDao.findByCitizenId(citizenId);
+  }
+
+  @Override
+  public void registerDefaultVisibilities(@NotNull UUID playerUuid, boolean forceDefault) {
+    Preconditions.checkNotNull(playerUuid);
+
+    List<DefaultCitizenVisibility> defaultCitizenVisibilities =
+        defaultCitizenVisibilityDao.findAll();
+
+    for (DefaultCitizenVisibility defaultCitizenVisibility : defaultCitizenVisibilities) {
+      int citizenId = defaultCitizenVisibility.getCitizenId();
+
+      Optional<CitizenVisibility> citizenVisibility =
+          citizenVisibilityDao.find(playerUuid, citizenId);
+
+      if (citizenVisibility.isPresent() && forceDefault) {
+        citizenVisibility.get().isCitizenVisible(defaultCitizenVisibility.isVisibleByDefault());
+        citizenVisibilityDao.update(citizenVisibility.get());
+        continue;
+      }
+
+      if (citizenVisibility.isEmpty()) {
+        CitizenVisibility newCv = new CitizenVisibility(playerUuid);
+        newCv.citizenId(citizenId);
+        newCv.isCitizenVisible(defaultCitizenVisibility.isVisibleByDefault());
+        citizenVisibilityDao.persist(newCv);
+      }
+    }
   }
 
   @Override
