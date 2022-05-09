@@ -21,6 +21,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import fr.voltariuss.bukkit.citizens_visibility.CitizensVisibilityRuntimeException;
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.CitizenVisibility;
+import fr.voltariuss.bukkit.citizens_visibility.model.entity.DefaultCitizenVisibility;
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.Player;
 import java.nio.file.Path;
 import javax.inject.Named;
@@ -82,6 +83,7 @@ public class GuiceCitizensVisibilityModule extends AbstractModule {
               .setProperty("hibernate.hikari.maximumPoolSize", "10")
               .setProperty("hibernate.hikari.minimumIdle", "5")
               .addAnnotatedClass(CitizenVisibility.class)
+              .addAnnotatedClass(DefaultCitizenVisibility.class)
               .addAnnotatedClass(Player.class);
 
       logger.info("Database connexion established (SQLite).");
