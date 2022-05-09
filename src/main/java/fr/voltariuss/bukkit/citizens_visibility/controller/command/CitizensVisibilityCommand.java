@@ -3,6 +3,7 @@ package fr.voltariuss.bukkit.citizens_visibility.controller.command;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Subcommand;
 import fr.voltariuss.bukkit.citizens_visibility.controller.api.CitizenVisibilityController;
@@ -24,21 +25,25 @@ public class CitizensVisibilityCommand extends BaseCommand {
   }
 
   @Subcommand("hide")
+  @CommandCompletion("@cv_citizens_id @cv_players")
   public void onHide(@NotNull CommandSender sender, int citizenId, @NotNull String playerName) {
     citizenVisibilityController.hideCitizen(sender, playerName, citizenId);
   }
 
   @Subcommand("hideall")
+  @CommandCompletion("@cv_citizens_id")
   public void onHideAll(@NotNull CommandSender sender, int citizenId) {
     citizenVisibilityController.hideCitizenForAllPlayers(sender, citizenId);
   }
 
   @Subcommand("show")
+  @CommandCompletion("@cv_citizens_id @cv_players")
   public void onShow(@NotNull CommandSender sender, int citizenId, @NotNull String playerName) {
     citizenVisibilityController.showCitizen(sender, playerName, citizenId);
   }
 
   @Subcommand("showall")
+  @CommandCompletion("@cv_citizens_id")
   public void onShowAll(@NotNull CommandSender sender, int citizenId) {
     citizenVisibilityController.showCitizenForAllPlayers(sender, citizenId);
   }

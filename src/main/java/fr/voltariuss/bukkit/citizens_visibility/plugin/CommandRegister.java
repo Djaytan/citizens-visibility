@@ -18,27 +18,30 @@ package fr.voltariuss.bukkit.citizens_visibility.plugin;
 
 import co.aikar.commands.PaperCommandManager;
 import fr.voltariuss.bukkit.citizens_visibility.controller.command.CitizensVisibilityCommand;
-import java.util.Arrays;
+import fr.voltariuss.bukkit.citizens_visibility.model.entity.Player;
+import fr.voltariuss.bukkit.citizens_visibility.model.service.api.PlayerService;
+import java.util.Objects;
+import java.util.stream.StreamSupport;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import org.jetbrains.annotations.NotNull;
 
 @Singleton
 public class CommandRegister {
 
   private final PaperCommandManager paperCommandManager;
-  private final Server server;
+  private final PlayerService playerService;
   private final CitizensVisibilityCommand citizensVisibilityCommand;
 
   @Inject
   public CommandRegister(
       @NotNull PaperCommandManager paperCommandManager,
-      @NotNull Server server,
+      @NotNull PlayerService playerService,
       @NotNull CitizensVisibilityCommand citizensVisibilityCommand) {
     this.paperCommandManager = paperCommandManager;
-    this.server = server;
+    this.playerService = playerService;
     this.citizensVisibilityCommand = citizensVisibilityCommand;
   }
 
@@ -50,12 +53,27 @@ public class CommandRegister {
     paperCommandManager
         .getCommandCompletions()
         .registerAsyncCompletion(
-            "allplayers",
+            "cv_players",
             context -> {
               long size = Long.parseLong(context.getConfig("size", "100"));
-              return Arrays.stream(server.getOfflinePlayers())
+              return playerService.fetchAll().stream()
                   .limit(size)
-                  .map(OfflinePlayer::getName)
+                  .map(Player::playerName)
+                  .filter(Objects::nonNull)
+                  .toList();
+            });
+
+    paperCommandManager
+        .getCommandCompletions()
+        .registerAsyncCompletion(
+            "cv_citizens_id",
+            context -> {
+              long size = Long.parseLong(context.getConfig("size", "100"));
+              return StreamSupport.stream(
+                      CitizensAPI.getNPCRegistry().sorted().spliterator(), false)
+                  .limit(size)
+                  .map(NPC::getId)
+                  .map(npcId -> Integer.toString(npcId))
                   .toList();
             });
   }
