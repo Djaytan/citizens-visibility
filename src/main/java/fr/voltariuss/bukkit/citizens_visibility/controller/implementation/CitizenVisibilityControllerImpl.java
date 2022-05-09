@@ -146,8 +146,10 @@ public class CitizenVisibilityControllerImpl implements CitizenVisibilityControl
     } else {
       citizenVisibilityService.hideCitizenForAllPlayers(citizenId);
     }
+    // TODO: merge show/hideAll methods with defineDefaultVisibility one
 
     updateCitizenVisibilities(citizenId);
+    citizenVisibilityService.defineDefaultVisibility(citizenId, isCitizenVisible);
 
     messageController.sendInfoMessage(
         audience,
