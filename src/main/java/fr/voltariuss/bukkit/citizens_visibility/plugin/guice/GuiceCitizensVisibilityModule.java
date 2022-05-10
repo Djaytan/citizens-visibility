@@ -70,6 +70,8 @@ public class GuiceCitizensVisibilityModule extends AbstractModule {
       Configuration configuration =
           new Configuration()
               .setProperty(AvailableSettings.URL, jdbcUrl)
+              .setProperty(AvailableSettings.AUTOCOMMIT, "false")
+              .setProperty(AvailableSettings.CONNECTION_PROVIDER_DISABLES_AUTOCOMMIT, "true")
               .setProperty(
                   AvailableSettings.CONNECTION_PROVIDER,
                   "org.hibernate.hikaricp.internal.HikariCPConnectionProvider")
@@ -80,6 +82,7 @@ public class GuiceCitizensVisibilityModule extends AbstractModule {
               .setProperty(AvailableSettings.FORMAT_SQL, "false")
               .setProperty(AvailableSettings.HBM2DDL_AUTO, "update")
               .setProperty(AvailableSettings.HBM2DDL_CHARSET_NAME, "UTF-8")
+              .setProperty("hibernate.hikari.autoCommit", "false")
               .setProperty("hibernate.hikari.maximumPoolSize", "10")
               .setProperty("hibernate.hikari.minimumIdle", "5")
               .addAnnotatedClass(CitizenVisibility.class)
