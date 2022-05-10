@@ -122,8 +122,11 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
         () -> {
           try (Session session = sessionFactory.openSession()) {
             // TODO: this isn't ideal for performances
+            session.beginTransaction();
             Query<T> query = action.apply(session);
-            return query.getResultList();
+            List<T> resultList = query.getResultList();
+            session.getTransaction().commit();
+            return resultList;
           } catch (RuntimeException e) {
             throw new JpaDaoException("Something went wrong during session", e);
           }
