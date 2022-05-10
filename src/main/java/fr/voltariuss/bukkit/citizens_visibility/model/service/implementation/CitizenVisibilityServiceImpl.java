@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 @Singleton
 public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
 
+  private static final boolean IS_CITIZEN_VISIBLE_BY_DEFAULT = true;
+
   private final CitizenVisibilityDao citizenVisibilityDao;
   private final DefaultCitizenVisibilityDao defaultCitizenVisibilityDao;
   private final PlayerService playerService;
@@ -72,40 +74,6 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
   }
 
   @Override
-  public @NotNull CompletableFuture<Void> registerDefaultVisibilities(
-      @NotNull UUID playerUuid, boolean forceDefault) {
-    Preconditions.checkNotNull(playerUuid);
-
-    return CompletableFuture.runAsync(
-        () -> {
-          List<DefaultCitizenVisibility> defaultCitizenVisibilities =
-              defaultCitizenVisibilityDao.findAll().join();
-
-          for (DefaultCitizenVisibility defaultCitizenVisibility : defaultCitizenVisibilities) {
-            int citizenId = defaultCitizenVisibility.getCitizenId();
-
-            Optional<CitizenVisibility> citizenVisibility =
-                citizenVisibilityDao.find(playerUuid, citizenId).join();
-
-            if (citizenVisibility.isPresent() && forceDefault) {
-              citizenVisibility
-                  .get()
-                  .isCitizenVisible(defaultCitizenVisibility.isVisibleByDefault());
-              citizenVisibilityDao.update(citizenVisibility.get());
-              continue;
-            }
-
-            if (citizenVisibility.isEmpty()) {
-              CitizenVisibility newCv = new CitizenVisibility(playerUuid);
-              newCv.citizenId(citizenId);
-              newCv.isCitizenVisible(defaultCitizenVisibility.isVisibleByDefault());
-              citizenVisibilityDao.persist(newCv);
-            }
-          }
-        });
-  }
-
-  @Override
   public @NotNull CompletableFuture<Void> hideCitizen(@NotNull UUID playerUuid, int citizenId) {
     return toggleCitizenVisibility(playerUuid, citizenId, false);
   }
@@ -132,7 +100,19 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
         () -> {
           Optional<CitizenVisibility> citizenVisibility =
               citizenVisibilityDao.find(playerUuid, citizenId).join();
-          return citizenVisibility.isEmpty() || citizenVisibility.get().isCitizenVisible();
+
+          if (citizenVisibility.isPresent()) {
+            return citizenVisibility.get().isCitizenVisible();
+          }
+
+          Optional<DefaultCitizenVisibility> defaultCitizenVisibility =
+              defaultCitizenVisibilityDao.findByCitizenId(citizenId).join();
+
+          if (defaultCitizenVisibility.isPresent()) {
+            return defaultCitizenVisibility.get().isVisibleByDefault();
+          }
+
+          return IS_CITIZEN_VISIBLE_BY_DEFAULT;
         });
   }
 

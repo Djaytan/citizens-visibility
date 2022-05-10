@@ -42,7 +42,6 @@ public class PlayerControllerImpl implements PlayerController {
               playerService.registerOrUpdateName(playerUuid, playerName).join();
 
           if (response.responseType() == ResponseType.PLAYER_REGISTERED) {
-            citizenVisibilityService.registerDefaultVisibilities(playerUuid, true);
             logger.info("Successfully registered player '{}' ({})", playerName, playerUuid);
             return;
           }

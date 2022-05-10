@@ -56,19 +56,6 @@ public interface CitizenVisibilityService {
   CompletableFuture<Void> defineDefaultVisibility(int citizenId, boolean isVisibleByDefault);
 
   /**
-   * Registers default visibilities of NPCs for the specified player.
-   *
-   * <p>By default, a default value not override an existing one. However, it's possible to force
-   * the default value anyway with the <code>forceDefault</code> parameter.
-   *
-   * @param playerUuid The player's UUID.
-   * @param forceDefault Specify whether a default value must override an existing one or not.
-   */
-  @NotNull
-  CompletableFuture<Void> registerDefaultVisibilities(
-      @NotNull UUID playerUuid, boolean forceDefault);
-
-  /**
    * Hides the targeted citizen for the given player's UUID.
    *
    * @param playerUuid The concerning player's UUID.
