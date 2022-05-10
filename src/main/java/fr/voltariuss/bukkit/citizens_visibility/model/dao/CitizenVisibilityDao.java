@@ -4,6 +4,7 @@ import fr.voltariuss.bukkit.citizens_visibility.model.entity.CitizenVisibility;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.hibernate.SessionFactory;
@@ -17,7 +18,8 @@ public class CitizenVisibilityDao extends JpaDao<CitizenVisibility, Long> {
     super(sessionFactory);
   }
 
-  public @NotNull Optional<CitizenVisibility> find(@NotNull UUID playerUuid, int citizenId) {
+  public @NotNull CompletableFuture<Optional<CitizenVisibility>> find(
+      @NotNull UUID playerUuid, int citizenId) {
     return executeQueryTransaction(
             session ->
                 session
@@ -27,11 +29,10 @@ public class CitizenVisibilityDao extends JpaDao<CitizenVisibility, Long> {
                         CitizenVisibility.class)
                     .setParameter("playerUuid", playerUuid)
                     .setParameter("citizenId", citizenId))
-        .stream()
-        .findFirst();
+        .thenApplyAsync(resultList -> resultList.stream().findFirst());
   }
 
-  public @NotNull List<CitizenVisibility> findByCitizenId(int citizenId) {
+  public @NotNull CompletableFuture<List<CitizenVisibility>> findByCitizenId(int citizenId) {
     return executeQueryTransaction(
         session ->
             session

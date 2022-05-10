@@ -19,6 +19,8 @@ package fr.voltariuss.bukkit.citizens_visibility.controller.implementation;
 import fr.voltariuss.bukkit.citizens_visibility.controller.api.MessageController;
 import fr.voltariuss.bukkit.citizens_visibility.controller.api.parameter.MessageType;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.kyori.adventure.audience.Audience;
@@ -35,6 +37,7 @@ import org.jetbrains.annotations.NotNull;
 public class MessageControllerImpl implements MessageController {
 
   private final ConsoleCommandSender consoleCommandSender;
+  private final Executor mainThreadExecutor;
   private final MiniMessage miniMessage;
   private final ResourceBundle resourceBundle;
   private final Server server;
@@ -42,10 +45,12 @@ public class MessageControllerImpl implements MessageController {
   @Inject
   public MessageControllerImpl(
       @NotNull ConsoleCommandSender consoleCommandSender,
+      @NotNull Executor mainThreadExecutor,
       @NotNull MiniMessage miniMessage,
       @NotNull ResourceBundle resourceBundle,
       @NotNull Server server) {
     this.consoleCommandSender = consoleCommandSender;
+    this.mainThreadExecutor = mainThreadExecutor;
     this.miniMessage = miniMessage;
     this.resourceBundle = resourceBundle;
     this.server = server;
@@ -78,22 +83,27 @@ public class MessageControllerImpl implements MessageController {
 
   @Override
   public void sendRawMessage(@NotNull Audience audience, @NotNull Component message) {
-    audience.sendMessage(message, net.kyori.adventure.audience.MessageType.SYSTEM);
+    sendMessage(audience, MessageType.RAW, message);
   }
 
   public void sendConsoleMessage(@NotNull Component message) {
-    consoleCommandSender.sendMessage(message, net.kyori.adventure.audience.MessageType.SYSTEM);
+    CompletableFuture.runAsync(() -> consoleCommandSender.sendMessage(message), mainThreadExecutor);
   }
 
   @Override
   public void broadcastMessage(@NotNull Component message) {
-    sendMessage(Audience.audience(server.getOnlinePlayers()), MessageType.BROADCAST, message);
+    Audience onlinePlayers = Audience.audience(server.getOnlinePlayers());
+    sendMessage(onlinePlayers, MessageType.BROADCAST, message);
   }
 
   private void sendMessage(
       @NotNull Audience audience, @NotNull MessageType messageType, @NotNull Component message) {
     Component formattedMessage = formatMessage(messageType, message);
-    audience.sendMessage(formattedMessage, net.kyori.adventure.audience.MessageType.SYSTEM);
+
+    CompletableFuture.runAsync(
+        () ->
+            audience.sendMessage(formattedMessage, net.kyori.adventure.audience.MessageType.SYSTEM),
+        mainThreadExecutor);
   }
 
   private @NotNull Component formatMessage(
@@ -107,7 +117,12 @@ public class MessageControllerImpl implements MessageController {
           case ERROR -> "citizen_visibility.common.message.format.error";
           case BROADCAST -> "citizen_visibility.common.message.format.broadcast";
           case DEBUG -> "citizen_visibility.common.message.format.debug";
+          case RAW -> "";
         };
+
+    if (messageFormatKey.isEmpty()) {
+      return message;
+    }
 
     return miniMessage
         .deserialize(

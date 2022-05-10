@@ -16,7 +16,6 @@
 
 package fr.voltariuss.bukkit.citizens_visibility.model.dao;
 
-import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 public class JpaDaoException extends RuntimeException {

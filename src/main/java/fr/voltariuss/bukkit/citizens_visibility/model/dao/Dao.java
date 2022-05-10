@@ -19,19 +19,23 @@ package fr.voltariuss.bukkit.citizens_visibility.model.dao;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.NotNull;
 
 public interface Dao<T, I extends Serializable> {
 
   @NotNull
-  Optional<T> findById(@NotNull I id);
+  CompletableFuture<Optional<T>> findById(@NotNull I id);
 
   @NotNull
-  List<T> findAll();
+  CompletableFuture<List<T>> findAll();
 
-  void persist(@NotNull T entity);
+  @NotNull
+  CompletableFuture<Void> persist(@NotNull T entity);
 
-  void update(@NotNull T entity);
+  @NotNull
+  CompletableFuture<Void> update(@NotNull T entity);
 
-  void delete(@NotNull T entity);
+  @NotNull
+  CompletableFuture<Void> delete(@NotNull T entity);
 }
