@@ -83,8 +83,8 @@ public class GuiceCitizensVisibilityModule extends AbstractModule {
               .setProperty(AvailableSettings.HBM2DDL_AUTO, "update")
               .setProperty(AvailableSettings.HBM2DDL_CHARSET_NAME, "UTF-8")
               .setProperty("hibernate.hikari.autoCommit", "false")
-              .setProperty("hibernate.hikari.maximumPoolSize", "10")
-              .setProperty("hibernate.hikari.minimumIdle", "5")
+              .setProperty("hibernate.hikari.maximumPoolSize", "1")
+              .setProperty("hibernate.hikari.minimumIdle", "1")
               .addAnnotatedClass(CitizenVisibility.class)
               .addAnnotatedClass(DefaultCitizenVisibility.class)
               .addAnnotatedClass(Player.class);
