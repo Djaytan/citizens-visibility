@@ -117,9 +117,9 @@ public class CitizenVisibilityControllerImpl implements CitizenVisibilityControl
           }
 
           if (isCitizenVisible) {
-            citizenVisibilityService.showCitizen(playerUuid, citizenId);
+            citizenVisibilityService.showCitizen(playerUuid, citizenId).join();
           } else {
-            citizenVisibilityService.hideCitizen(playerUuid, citizenId);
+            citizenVisibilityService.hideCitizen(playerUuid, citizenId).join();
           }
 
           updateCitizenVisibilities(npc);
@@ -157,14 +157,14 @@ public class CitizenVisibilityControllerImpl implements CitizenVisibilityControl
           }
 
           if (isCitizenVisible) {
-            citizenVisibilityService.showCitizenForAllPlayers(citizenId);
+            citizenVisibilityService.showCitizenForAllPlayers(citizenId).join();
           } else {
-            citizenVisibilityService.hideCitizenForAllPlayers(citizenId);
+            citizenVisibilityService.hideCitizenForAllPlayers(citizenId).join();
           }
+          citizenVisibilityService.defineDefaultVisibility(citizenId, isCitizenVisible).join();
           // TODO: merge show/hideAll methods with defineDefaultVisibility one
 
           updateCitizenVisibilities(npc);
-          citizenVisibilityService.defineDefaultVisibility(citizenId, isCitizenVisible);
 
           messageController.sendInfoMessage(
               audience,

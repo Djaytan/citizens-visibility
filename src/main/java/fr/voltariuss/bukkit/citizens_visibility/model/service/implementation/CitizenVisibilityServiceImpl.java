@@ -60,7 +60,7 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
           if (defaultCitizenVisibility.isPresent()) {
             DefaultCitizenVisibility dcv = defaultCitizenVisibility.get();
             dcv.setVisibleByDefault(isVisibleByDefault);
-            defaultCitizenVisibilityDao.update(dcv);
+            defaultCitizenVisibilityDao.update(dcv).join();
             return;
           }
 
@@ -69,7 +69,7 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
                   .citizenId(citizenId)
                   .isVisibleByDefault(isVisibleByDefault)
                   .build();
-          defaultCitizenVisibilityDao.persist(dcv);
+          defaultCitizenVisibilityDao.persist(dcv).join();
         });
   }
 
@@ -129,12 +129,13 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
             CitizenVisibility cv = new CitizenVisibility(playerUuid);
             cv.citizenId(citizenId);
             cv.isCitizenVisible(isCitizenVisible);
-            citizenVisibilityDao.persist(cv);
-          } else {
-            CitizenVisibility cv = citizenVisibility.get();
-            cv.isCitizenVisible(isCitizenVisible);
-            citizenVisibilityDao.update(cv);
+            citizenVisibilityDao.persist(cv).join();
+            return;
           }
+
+          CitizenVisibility cv = citizenVisibility.get();
+          cv.isCitizenVisible(isCitizenVisible);
+          citizenVisibilityDao.update(cv).join();
         });
   }
 
@@ -159,12 +160,12 @@ public class CitizenVisibilityServiceImpl implements CitizenVisibilityService {
             CitizenVisibility citizenVisibility = new CitizenVisibility(playerUuid);
             citizenVisibility.citizenId(citizenId);
             citizenVisibility.isCitizenVisible(isCitizenVisible);
-            citizenVisibilityDao.persist(citizenVisibility);
+            citizenVisibilityDao.persist(citizenVisibility).join();
           }
 
           for (CitizenVisibility citizenVisibility : citizenVisibilities) {
             citizenVisibility.isCitizenVisible(isCitizenVisible);
-            citizenVisibilityDao.update(citizenVisibility);
+            citizenVisibilityDao.update(citizenVisibility).join();
           }
         });
   }

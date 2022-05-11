@@ -37,7 +37,7 @@ public class PlayerServiceImpl implements PlayerService {
 
           if (player.isEmpty()) {
             Player p = new Player(playerUuid, playerName);
-            playerDao.persist(p);
+            playerDao.persist(p).join();
             return PlayerRegisterResponse.builder()
                 .responseType(ResponseType.PLAYER_REGISTERED)
                 .build();
@@ -47,28 +47,27 @@ public class PlayerServiceImpl implements PlayerService {
 
           // According to CraftBukkit sources, lower/upper cases aren't taken into account for
           // player names. See UserCache#get(String) method
-          if (fetchedPlayerName != null && !fetchedPlayerName.equals(playerName)) {
-
-            // Remove outdated binding UUID -> name (name must be unique)
-            Optional<Player> playerWithName = playerDao.findByName(playerName).join();
-            playerWithName.ifPresent(
-                p -> {
-                  p.playerName(null);
-                  playerDao.update(p);
-                });
-
-            Player p = player.get();
-            p.playerName(playerName);
-            playerDao.update(p);
-
-            return PlayerRegisterResponse.builder()
-                .responseType(ResponseType.PLAYER_NAME_UPDATED)
-                .oldPlayerName(fetchedPlayerName)
-                .newPlayerName(playerName)
-                .build();
+          if (playerName.equals(fetchedPlayerName)) {
+            return PlayerRegisterResponse.builder().responseType(ResponseType.NOTHING).build();
           }
 
-          return PlayerRegisterResponse.builder().responseType(ResponseType.NOTHING).build();
+          // Remove outdated binding UUID -> name (name must be unique)
+          Optional<Player> playerWithName = playerDao.findByName(playerName).join();
+          playerWithName.ifPresent(
+              p -> {
+                p.playerName(null);
+                playerDao.update(p).join();
+              });
+
+          Player p = player.get();
+          p.playerName(playerName);
+          playerDao.update(p).join();
+
+          return PlayerRegisterResponse.builder()
+              .responseType(ResponseType.PLAYER_NAME_UPDATED)
+              .oldPlayerName(fetchedPlayerName)
+              .newPlayerName(playerName)
+              .build();
         });
   }
 

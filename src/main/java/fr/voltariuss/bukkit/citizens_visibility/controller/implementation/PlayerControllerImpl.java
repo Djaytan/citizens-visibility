@@ -3,7 +3,6 @@ package fr.voltariuss.bukkit.citizens_visibility.controller.implementation;
 import com.google.common.base.Preconditions;
 import fr.voltariuss.bukkit.citizens_visibility.RemakeBukkitLogger;
 import fr.voltariuss.bukkit.citizens_visibility.controller.api.PlayerController;
-import fr.voltariuss.bukkit.citizens_visibility.model.service.api.CitizenVisibilityService;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.PlayerService;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.parameter.PlayerRegisterResponse;
 import fr.voltariuss.bukkit.citizens_visibility.model.service.api.parameter.PlayerRegisterResponse.ResponseType;
@@ -16,16 +15,12 @@ import org.jetbrains.annotations.NotNull;
 @Singleton
 public class PlayerControllerImpl implements PlayerController {
 
-  private final CitizenVisibilityService citizenVisibilityService;
   private final RemakeBukkitLogger logger;
   private final PlayerService playerService;
 
   @Inject
   public PlayerControllerImpl(
-      @NotNull CitizenVisibilityService citizenVisibilityService,
-      @NotNull RemakeBukkitLogger logger,
-      @NotNull PlayerService playerService) {
-    this.citizenVisibilityService = citizenVisibilityService;
+      @NotNull RemakeBukkitLogger logger, @NotNull PlayerService playerService) {
     this.logger = logger;
     this.playerService = playerService;
   }
