@@ -34,9 +34,11 @@ public class NamedEntitySpawnPacketListener extends PacketAdapter {
       return;
     }
 
+    // Sorry for that
     boolean isCitizenVisibleForPlayer =
-        citizenVisibilityService.isCitizenVisibleForPlayer(
-            event.getPlayer().getUniqueId(), npc.getId());
+        citizenVisibilityService
+            .isCitizenVisibleForPlayer(event.getPlayer().getUniqueId(), npc.getId())
+            .join();
 
     if (!isCitizenVisibleForPlayer) {
       event.setCancelled(true);

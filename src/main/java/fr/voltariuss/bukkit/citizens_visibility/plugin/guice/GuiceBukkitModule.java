@@ -19,6 +19,7 @@ package fr.voltariuss.bukkit.citizens_visibility.plugin.guice;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import java.util.concurrent.Executor;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.inventory.ItemFactory;
@@ -110,5 +111,11 @@ public class GuiceBukkitModule extends AbstractModule {
   @Singleton
   public @NotNull StructureManager provideStructureManager() {
     return plugin.getServer().getStructureManager();
+  }
+
+  @Provides
+  @Singleton
+  public @NotNull Executor provideMainThreadExecutor() {
+    return runnable -> plugin.getServer().getScheduler().runTask(plugin, runnable);
   }
 }

@@ -5,6 +5,7 @@ import fr.voltariuss.bukkit.citizens_visibility.model.entity.Player;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -34,7 +35,7 @@ public interface CitizenVisibilityService {
    * @return The optional citizen visibility.
    */
   @NotNull
-  Optional<CitizenVisibility> fetch(@NotNull UUID playerUuid, int citizenId);
+  CompletableFuture<Optional<CitizenVisibility>> fetch(@NotNull UUID playerUuid, int citizenId);
 
   /**
    * Searches and provides the citizen's visibility for all registered players.
@@ -43,7 +44,7 @@ public interface CitizenVisibilityService {
    * @return The list of citizen's visibility of each registered player.
    */
   @NotNull
-  List<CitizenVisibility> fetchAll(int citizenId);
+  CompletableFuture<List<CitizenVisibility>> fetchAll(int citizenId);
 
   /**
    * Defines the default visibility for the given citizen.
@@ -51,18 +52,8 @@ public interface CitizenVisibilityService {
    * @param citizenId The citizen's ID.
    * @param isVisibleByDefault The default visibility to define for the given citizen.
    */
-  void defineDefaultVisibility(int citizenId, boolean isVisibleByDefault);
-
-  /**
-   * Registers default visibilities of NPCs for the specified player.
-   *
-   * <p>By default, a default value not override an existing one. However, it's possible to force
-   * the default value anyway with the <code>forceDefault</code> parameter.
-   *
-   * @param playerUuid The player's UUID.
-   * @param forceDefault Specify whether a default value must override an existing one or not.
-   */
-  void registerDefaultVisibilities(@NotNull UUID playerUuid, boolean forceDefault);
+  @NotNull
+  CompletableFuture<Void> defineDefaultVisibility(int citizenId, boolean isVisibleByDefault);
 
   /**
    * Hides the targeted citizen for the given player's UUID.
@@ -70,14 +61,16 @@ public interface CitizenVisibilityService {
    * @param playerUuid The concerning player's UUID.
    * @param citizenId The targeted citizen.
    */
-  void hideCitizen(@NotNull UUID playerUuid, int citizenId);
+  @NotNull
+  CompletableFuture<Void> hideCitizen(@NotNull UUID playerUuid, int citizenId);
 
   /**
    * Hides the targeted citizen for all registered {@link Player}s.
    *
    * @param citizenId The targeted citizen.
    */
-  void hideCitizenForAllPlayers(int citizenId);
+  @NotNull
+  CompletableFuture<Void> hideCitizenForAllPlayers(int citizenId);
 
   /**
    * Shows the targeted citizen for the given player's UUID.
@@ -85,14 +78,16 @@ public interface CitizenVisibilityService {
    * @param playerUuid The concerning player's UUID.
    * @param citizenId The targeted citizen.
    */
-  void showCitizen(@NotNull UUID playerUuid, int citizenId);
+  @NotNull
+  CompletableFuture<Void> showCitizen(@NotNull UUID playerUuid, int citizenId);
 
   /**
    * Shows the targeted citizen for all registered {@link Player}s.
    *
    * @param citizenId The targeted citizen.
    */
-  void showCitizenForAllPlayers(int citizenId);
+  @NotNull
+  CompletableFuture<Void> showCitizenForAllPlayers(int citizenId);
 
   /**
    * Checks if the specified citizen is visible for the given player.
@@ -102,5 +97,6 @@ public interface CitizenVisibilityService {
    * @return <code>true</code> if the citizen is visible for the given player, <code>false</code>
    *     otherwise.
    */
-  boolean isCitizenVisibleForPlayer(@NotNull UUID playerUuid, int citizenId);
+  @NotNull
+  CompletableFuture<Boolean> isCitizenVisibleForPlayer(@NotNull UUID playerUuid, int citizenId);
 }

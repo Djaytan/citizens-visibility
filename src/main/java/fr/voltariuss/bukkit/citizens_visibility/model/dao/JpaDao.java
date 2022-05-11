@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import org.hibernate.Session;
@@ -56,8 +57,9 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
   }
 
   @Override
-  public @NotNull Optional<T> findById(@NotNull I id) {
+  public @NotNull CompletableFuture<Optional<T>> findById(@NotNull I id) {
     Preconditions.checkNotNull(id);
+
     return executeQueryTransaction(
             session ->
                 session
@@ -67,12 +69,11 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
                             persistentClass.getSimpleName()),
                         persistentClass)
                     .setParameter("id", id))
-        .stream()
-        .findFirst();
+        .thenApplyAsync(resultList -> resultList.stream().findFirst());
   }
 
   @Override
-  public @NotNull List<T> findAll() {
+  public @NotNull CompletableFuture<List<T>> findAll() {
     return executeQueryTransaction(
         session ->
             session.createQuery(
@@ -81,47 +82,54 @@ public abstract class JpaDao<T, I extends Serializable> implements Dao<T, I> {
   }
 
   @Override
-  public void persist(@NotNull T entity) {
+  public @NotNull CompletableFuture<Void> persist(@NotNull T entity) {
     Preconditions.checkNotNull(entity);
-    executeTransaction(session -> session.persist(entity));
+    return executeTransaction(session -> session.persist(entity));
   }
 
   @Override
-  public void update(@NotNull T entity) {
+  public @NotNull CompletableFuture<Void> update(@NotNull T entity) {
     Preconditions.checkNotNull(entity);
-    executeTransaction(session -> session.merge(entity));
+    return executeTransaction(session -> session.merge(entity));
   }
 
   @Override
-  public void delete(@NotNull T entity) {
+  public @NotNull CompletableFuture<Void> delete(@NotNull T entity) {
     Preconditions.checkNotNull(entity);
-    executeTransaction(session -> session.delete(entity));
+    return executeTransaction(session -> session.delete(entity));
   }
 
-  protected void executeTransaction(@NotNull Consumer<Session> action) {
+  protected @NotNull CompletableFuture<Void> executeTransaction(@NotNull Consumer<Session> action) {
     Preconditions.checkNotNull(action);
 
-    try (Session session = sessionFactory.openSession()) {
-      session.beginTransaction();
-      action.accept(session);
-      session.getTransaction().commit();
-    } catch (RuntimeException e) {
-      throw new JpaDaoException("Something went wrong during session", e);
-    }
+    return CompletableFuture.runAsync(
+        () -> {
+          try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            action.accept(session);
+            session.getTransaction().commit();
+          } catch (RuntimeException e) {
+            throw new JpaDaoException("Something went wrong during session", e);
+          }
+        });
   }
 
-  protected @NotNull List<T> executeQueryTransaction(@NotNull Function<Session, Query<T>> action) {
+  protected @NotNull CompletableFuture<List<T>> executeQueryTransaction(
+      @NotNull Function<Session, Query<T>> action) {
     Preconditions.checkNotNull(action);
 
-    try (Session session = sessionFactory.openSession()) {
-      // TODO: this isn't ideal for performances
-      session.beginTransaction();
-      Query<T> query = action.apply(session);
-      List<T> resultList = query.getResultList();
-      session.getTransaction().commit();
-      return resultList;
-    } catch (RuntimeException e) {
-      throw new JpaDaoException("Something went wrong during session", e);
-    }
+    return CompletableFuture.supplyAsync(
+        () -> {
+          try (Session session = sessionFactory.openSession()) {
+            // TODO: this isn't ideal for performances
+            session.beginTransaction();
+            Query<T> query = action.apply(session);
+            List<T> resultList = query.getResultList();
+            session.getTransaction().commit();
+            return resultList;
+          } catch (RuntimeException e) {
+            throw new JpaDaoException("Something went wrong during session", e);
+          }
+        });
   }
 }

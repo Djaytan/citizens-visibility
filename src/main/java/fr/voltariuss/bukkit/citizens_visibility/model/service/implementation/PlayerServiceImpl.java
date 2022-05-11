@@ -9,6 +9,7 @@ import fr.voltariuss.bukkit.citizens_visibility.model.service.api.parameter.Play
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -24,60 +25,64 @@ public class PlayerServiceImpl implements PlayerService {
   }
 
   @Override
-  public @NotNull PlayerRegisterResponse registerOrUpdateName(
+  public @NotNull CompletableFuture<PlayerRegisterResponse> registerOrUpdateName(
       @NotNull UUID playerUuid, @NotNull String playerName) {
     Preconditions.checkNotNull(playerUuid);
     Preconditions.checkNotNull(playerName);
     Preconditions.checkArgument(!playerName.isBlank());
 
-    Optional<Player> player = playerDao.findById(playerUuid);
+    return CompletableFuture.supplyAsync(
+        () -> {
+          Optional<Player> player = playerDao.findById(playerUuid).join();
 
-    if (player.isEmpty()) {
-      Player p = new Player(playerUuid, playerName);
-      playerDao.persist(p);
-      return PlayerRegisterResponse.builder().responseType(ResponseType.PLAYER_REGISTERED).build();
-    }
+          if (player.isEmpty()) {
+            Player p = new Player(playerUuid, playerName);
+            playerDao.persist(p).join();
+            return PlayerRegisterResponse.builder()
+                .responseType(ResponseType.PLAYER_REGISTERED)
+                .build();
+          }
 
-    String fetchedPlayerName = player.get().playerName();
+          String fetchedPlayerName = player.get().playerName();
 
-    // According to CraftBukkit sources, cases aren't taken into account for player names
-    // See UserCache#get(String) method
-    if (fetchedPlayerName != null && !fetchedPlayerName.equals(playerName)) {
+          // According to CraftBukkit sources, lower/upper cases aren't taken into account for
+          // player names. See UserCache#get(String) method
+          if (playerName.equals(fetchedPlayerName)) {
+            return PlayerRegisterResponse.builder().responseType(ResponseType.NOTHING).build();
+          }
 
-      // Remove outdated binding UUID -> name (name must be unique)
-      Optional<Player> playerWithName = playerDao.findByName(playerName);
-      playerWithName.ifPresent(
-          p -> {
-            p.playerName(null);
-            playerDao.update(p);
-          });
+          // Remove outdated binding UUID -> name (name must be unique)
+          Optional<Player> playerWithName = playerDao.findByName(playerName).join();
+          playerWithName.ifPresent(
+              p -> {
+                p.playerName(null);
+                playerDao.update(p).join();
+              });
 
-      Player p = player.get();
-      p.playerName(playerName);
-      playerDao.update(p);
+          Player p = player.get();
+          p.playerName(playerName);
+          playerDao.update(p).join();
 
-      return PlayerRegisterResponse.builder()
-          .responseType(ResponseType.PLAYER_NAME_UPDATED)
-          .oldPlayerName(fetchedPlayerName)
-          .newPlayerName(playerName)
-          .build();
-    }
-
-    return PlayerRegisterResponse.builder().responseType(ResponseType.NOTHING).build();
+          return PlayerRegisterResponse.builder()
+              .responseType(ResponseType.PLAYER_NAME_UPDATED)
+              .oldPlayerName(fetchedPlayerName)
+              .newPlayerName(playerName)
+              .build();
+        });
   }
 
   @Override
-  public Optional<Player> fetchFromId(@NotNull UUID playerUuid) {
+  public @NotNull CompletableFuture<Optional<Player>> fetchFromId(@NotNull UUID playerUuid) {
     return playerDao.findById(playerUuid);
   }
 
   @Override
-  public Optional<Player> fetchFromName(@NotNull String playerName) {
+  public @NotNull CompletableFuture<Optional<Player>> fetchFromName(@NotNull String playerName) {
     return playerDao.findByName(playerName);
   }
 
   @Override
-  public @NotNull List<Player> fetchAll() {
+  public @NotNull CompletableFuture<List<Player>> fetchAll() {
     return playerDao.findAll();
   }
 }

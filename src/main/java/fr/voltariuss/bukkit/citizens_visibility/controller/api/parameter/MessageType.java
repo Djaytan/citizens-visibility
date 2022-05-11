@@ -23,5 +23,6 @@ public enum MessageType {
   WARNING,
   ERROR,
   BROADCAST,
-  DEBUG
+  DEBUG,
+  RAW
 }

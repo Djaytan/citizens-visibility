@@ -12,6 +12,8 @@ import fr.voltariuss.bukkit.citizens_visibility.view.CitizenVisibilityMessage;
 import fr.voltariuss.bukkit.citizens_visibility.view.CommonMessage;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.citizensnpcs.api.CitizensAPI;
@@ -28,6 +30,7 @@ public class CitizenVisibilityControllerImpl implements CitizenVisibilityControl
   private final CitizenVisibilityService citizenVisibilityService;
   private final CommonMessage commonMessage;
   private final RemakeBukkitLogger logger;
+  private final Executor mainThreadExecutor;
   private final MessageController messageController;
   private final PlayerService playerService;
   private final Server server;
@@ -38,6 +41,7 @@ public class CitizenVisibilityControllerImpl implements CitizenVisibilityControl
       @NotNull CitizenVisibilityService citizenVisibilityService,
       @NotNull CommonMessage commonMessage,
       @NotNull RemakeBukkitLogger logger,
+      @NotNull Executor mainThreadExecutor,
       @NotNull MessageController messageController,
       @NotNull PlayerService playerService,
       @NotNull Server server) {
@@ -45,6 +49,7 @@ public class CitizenVisibilityControllerImpl implements CitizenVisibilityControl
     this.citizenVisibilityService = citizenVisibilityService;
     this.commonMessage = commonMessage;
     this.logger = logger;
+    this.mainThreadExecutor = mainThreadExecutor;
     this.messageController = messageController;
     this.playerService = playerService;
     this.server = server;
@@ -79,138 +84,134 @@ public class CitizenVisibilityControllerImpl implements CitizenVisibilityControl
     Preconditions.checkNotNull(playerName);
     Preconditions.checkArgument(!playerName.isBlank());
 
-    NPC npc = CitizensAPI.getNPCRegistry().getById(citizenId);
+    CompletableFuture.runAsync(
+        () -> {
+          NPC npc = CitizensAPI.getNPCRegistry().getById(citizenId);
 
-    if (npc == null) {
-      messageController.sendFailureMessage(
-          audience, citizenVisibilityMessage.citizenNotFound(citizenId));
-      return;
-    }
+          if (npc == null) {
+            messageController.sendFailureMessage(
+                audience, citizenVisibilityMessage.citizenNotFound(citizenId));
+            return;
+          }
 
-    Optional<UUID> playerUuidOptional = uuidFromPlayerName(playerName);
+          Optional<UUID> playerUuidOptional = uuidFromPlayerName(playerName).join();
 
-    if (playerUuidOptional.isEmpty()) {
-      messageController.sendFailureMessage(audience, commonMessage.playerNotFound(playerName));
-      return;
-    }
+          if (playerUuidOptional.isEmpty()) {
+            messageController.sendFailureMessage(
+                audience, commonMessage.playerNotFound(playerName));
+            return;
+          }
 
-    UUID playerUuid = playerUuidOptional.get();
+          UUID playerUuid = playerUuidOptional.get();
 
-    Optional<CitizenVisibility> citizenVisibility =
-        citizenVisibilityService.fetch(playerUuid, citizenId);
+          Optional<CitizenVisibility> citizenVisibility =
+              citizenVisibilityService.fetch(playerUuid, citizenId).join();
 
-    if (citizenVisibility.isPresent()
-        && citizenVisibility.get().isCitizenVisible() == isCitizenVisible) {
-      messageController.sendFailureMessage(
-          audience,
-          citizenVisibilityMessage.visibilityNotChanged(
-              playerName, citizenId, npc.getName(), isCitizenVisible));
-      return;
-    }
+          if (citizenVisibility.isPresent()
+              && citizenVisibility.get().isCitizenVisible() == isCitizenVisible) {
+            messageController.sendFailureMessage(
+                audience,
+                citizenVisibilityMessage.visibilityNotChanged(
+                    playerName, citizenId, npc.getName(), isCitizenVisible));
+            return;
+          }
 
-    if (isCitizenVisible) {
-      citizenVisibilityService.showCitizen(playerUuid, citizenId);
-    } else {
-      citizenVisibilityService.hideCitizen(playerUuid, citizenId);
-    }
+          if (isCitizenVisible) {
+            citizenVisibilityService.showCitizen(playerUuid, citizenId).join();
+          } else {
+            citizenVisibilityService.hideCitizen(playerUuid, citizenId).join();
+          }
 
-    updateCitizenVisibilities(citizenId);
+          updateCitizenVisibilities(npc);
 
-    messageController.sendInfoMessage(
-        audience,
-        citizenVisibilityMessage.visibilityToggled(
-            playerName, citizenId, npc.getName(), isCitizenVisible));
+          messageController.sendInfoMessage(
+              audience,
+              citizenVisibilityMessage.visibilityToggled(
+                  playerName, citizenId, npc.getName(), isCitizenVisible));
 
-    logger.info(
-        "Toggle visibility of the citizen with ID {} ({}) for the player {}: newVisibility={}",
-        citizenId,
-        npc.getName(),
-        playerName,
-        isCitizenVisible);
+          logger.info(
+              "Toggle visibility of the citizen with ID {} ({}) for the player {}:"
+                  + " newVisibility={}",
+              citizenId,
+              npc.getName(),
+              playerName,
+              isCitizenVisible);
+        });
   }
 
   private void toggleCitizenVisibilityForAllPlayers(
       @NotNull Audience audience, int citizenId, boolean isCitizenVisible) {
     Preconditions.checkNotNull(audience);
 
-    NPC npc = CitizensAPI.getNPCRegistry().getById(citizenId);
+    CompletableFuture.runAsync(
+        () -> {
+          NPC npc =
+              CompletableFuture.supplyAsync(
+                      () -> CitizensAPI.getNPCRegistry().getById(citizenId), mainThreadExecutor)
+                  .join();
 
-    if (npc == null) {
-      messageController.sendFailureMessage(
-          audience, citizenVisibilityMessage.citizenNotFound(citizenId));
-      return;
-    }
+          if (npc == null) {
+            messageController.sendFailureMessage(
+                audience, citizenVisibilityMessage.citizenNotFound(citizenId));
+            return;
+          }
 
-    if (isCitizenVisible) {
-      citizenVisibilityService.showCitizenForAllPlayers(citizenId);
-    } else {
-      citizenVisibilityService.hideCitizenForAllPlayers(citizenId);
-    }
-    // TODO: merge show/hideAll methods with defineDefaultVisibility one
+          if (isCitizenVisible) {
+            citizenVisibilityService.showCitizenForAllPlayers(citizenId).join();
+          } else {
+            citizenVisibilityService.hideCitizenForAllPlayers(citizenId).join();
+          }
+          citizenVisibilityService.defineDefaultVisibility(citizenId, isCitizenVisible).join();
+          // TODO: merge show/hideAll methods with defineDefaultVisibility one
 
-    updateCitizenVisibilities(citizenId);
-    citizenVisibilityService.defineDefaultVisibility(citizenId, isCitizenVisible);
+          updateCitizenVisibilities(npc);
 
-    messageController.sendInfoMessage(
-        audience,
-        citizenVisibilityMessage.visibilityToggledForAllPlayers(
-            citizenId, npc.getName(), isCitizenVisible));
+          messageController.sendInfoMessage(
+              audience,
+              citizenVisibilityMessage.visibilityToggledForAllPlayers(
+                  citizenId, npc.getName(), isCitizenVisible));
 
-    logger.info(
-        "Toggle visibility of the citizen with ID {} ({}) for all players: newVisibility={}",
-        citizenId,
-        npc.getName(),
-        isCitizenVisible);
+          logger.info(
+              "Toggle visibility of the citizen with ID {} ({}) for all players: newVisibility={}",
+              citizenId,
+              npc.getName(),
+              isCitizenVisible);
+        });
   }
 
-  private @NotNull Optional<UUID> uuidFromPlayerName(@NotNull String playerName) {
-    // Search through online players
-    org.bukkit.entity.Player onlinePlayer = server.getPlayerExact(playerName);
+  private @NotNull CompletableFuture<Optional<UUID>> uuidFromPlayerName(
+      @NotNull String playerName) {
+    return CompletableFuture.supplyAsync(
+        () -> {
+          // Search through online players
+          org.bukkit.entity.Player onlinePlayer =
+              CompletableFuture.supplyAsync(
+                      () -> server.getPlayerExact(playerName), mainThreadExecutor)
+                  .join();
 
-    if (onlinePlayer != null) {
-      return Optional.of(onlinePlayer.getUniqueId());
-    }
+          if (onlinePlayer != null) {
+            return Optional.of(onlinePlayer.getUniqueId());
+          }
 
-    // Search through plugin's data source (and ignore server cache to prevent sync issues when
-    // cache is older than plugin's data source)
-    Optional<Player> player = playerService.fetchFromName(playerName);
+          // Search through plugin's data source (and ignore server cache to prevent sync issues
+          // when
+          // cache is older than plugin's data source)
+          Optional<Player> player = playerService.fetchFromName(playerName).join();
 
-    if (player.isPresent()) {
-      return Optional.of(player.get().playerUuid());
-    }
+          if (player.isPresent()) {
+            return Optional.of(player.get().playerUuid());
+          }
 
-    return Optional.empty();
+          return Optional.empty();
+        });
   }
 
-  private void updateCitizenVisibilities(int citizenId) {
-    NPC npc = CitizensAPI.getNPCRegistry().getById(citizenId);
-    npc.despawn(DespawnReason.PLUGIN);
-    npc.spawn(npc.getStoredLocation());
-
-    // TODO: try with packets (just for fun...)
-
-    //    Entity npcEntity = npc.getEntity();
-    //    Location npcLocation = npcEntity.getLocation();
-    //
-    //    PacketContainer namedEntitySpawn =
-    // protocolManager.createPacket(Play.Server.NAMED_ENTITY_SPAWN);
-    //    namedEntitySpawn.getEntityModifier(player.getWorld()).writeSafely(0, npcEntity);
-    //    namedEntitySpawn.getUUIDs().writeSafely(1, npcEntity.getUniqueId());
-    //    namedEntitySpawn.getDoubles().writeSafely(2, npcLocation.getX());
-    //    namedEntitySpawn.getDoubles().writeSafely(3, npcLocation.getY());
-    //    namedEntitySpawn.getDoubles().writeSafely(4, npcLocation.getZ());
-    //    namedEntitySpawn.getFloat().writeSafely(5, npcLocation.getYaw());
-    //    namedEntitySpawn.getFloat().writeSafely(6, npcLocation.getPitch());
-    //
-    //    try {
-    //      protocolManager.sendServerPacket(player, namedEntitySpawn);
-    //      logger.info("Spawn back citizen with ID {} to player {}", citizenId, player.getName());
-    //    } catch (InvocationTargetException e) {
-    //      throw new CitizensVisibilityRuntimeException(
-    //          String.format(
-    //              "Failed to send packet %1$s to player %2$s",
-    //              namedEntitySpawn.getType().name(), player.getName()),
-    //          e);
-    //    }
+  private void updateCitizenVisibilities(@NotNull NPC npc) {
+    CompletableFuture.runAsync(
+        () -> {
+          npc.despawn(DespawnReason.PLUGIN);
+          npc.spawn(npc.getStoredLocation());
+        },
+        mainThreadExecutor);
   }
 }

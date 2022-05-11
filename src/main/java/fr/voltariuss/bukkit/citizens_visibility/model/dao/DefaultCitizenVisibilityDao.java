@@ -2,6 +2,7 @@ package fr.voltariuss.bukkit.citizens_visibility.model.dao;
 
 import fr.voltariuss.bukkit.citizens_visibility.model.entity.DefaultCitizenVisibility;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.hibernate.SessionFactory;
@@ -20,7 +21,8 @@ public class DefaultCitizenVisibilityDao extends JpaDao<DefaultCitizenVisibility
     super(sessionFactory);
   }
 
-  public @NotNull Optional<DefaultCitizenVisibility> findByCitizenId(int citizenId) {
+  public @NotNull CompletableFuture<Optional<DefaultCitizenVisibility>> findByCitizenId(
+      int citizenId) {
     return executeQueryTransaction(
             session ->
                 session
@@ -29,7 +31,6 @@ public class DefaultCitizenVisibilityDao extends JpaDao<DefaultCitizenVisibility
                             + " :citizenId",
                         DefaultCitizenVisibility.class)
                     .setParameter("citizenId", citizenId))
-        .stream()
-        .findFirst();
+        .thenApplyAsync(resultList -> resultList.stream().findFirst());
   }
 }

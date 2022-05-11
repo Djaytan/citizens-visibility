@@ -56,7 +56,7 @@ public class CommandRegister {
             "cv_players",
             context -> {
               long size = Long.parseLong(context.getConfig("size", "100"));
-              return playerService.fetchAll().stream()
+              return playerService.fetchAll().join().stream()
                   .limit(size)
                   .map(Player::playerName)
                   .filter(Objects::nonNull)
