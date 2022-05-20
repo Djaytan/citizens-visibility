@@ -1,2 +1,2 @@
 # citizens-visibility
-Citizens visibility Bukkit plugin for ColdDragons
+Citizens visibility Bukkit plugin
