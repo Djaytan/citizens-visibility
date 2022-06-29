@@ -25,12 +25,12 @@ This result is achieved by blocking some packets dispatched by the Minecraft ser
 
 ## Commands
 
-            Command             |         Permission         |              Description              
-------------------------------- | -------------------------- | --------------------------------------
-/cv hide <npc_id> <playername>  | citizensvisibility.hide    | Hide a given NPC for a specific player
-/cv show <npc_id> <playername>  | citizensvisibility.show    | Show a given NPC for a specific player
-/cv hideall <npc_id>            | citizensvisibility.hideall | Hide a given NPC for all players
-/cv showall <npc_id>            | citizensvisibility.showall | Show a given NPC for all players
+|             Command             |         Permission         |              Description               |
+| ------------------------------- | -------------------------- | -------------------------------------- |
+| /cv hide <npc_id> <playername>  | citizensvisibility.hide    | Hide a given NPC for a specific player |
+| /cv show <npc_id> <playername>  | citizensvisibility.show    | Show a given NPC for a specific player |
+| /cv hideall <npc_id>            | citizensvisibility.hideall | Hide a given NPC for all players       |
+| /cv showall <npc_id>            | citizensvisibility.showall | Show a given NPC for all players       |
 
 ## Setup
 
