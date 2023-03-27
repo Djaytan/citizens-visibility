@@ -21,7 +21,7 @@ public class SpawnEntityLivingPacketListener extends PacketAdapter {
   @Inject
   public SpawnEntityLivingPacketListener(
       @NotNull Plugin plugin, @NotNull CitizenVisibilityService citizenVisibilityService) {
-    super(plugin, ListenerPriority.HIGHEST, Server.SPAWN_ENTITY_LIVING);
+    super(plugin, ListenerPriority.HIGHEST, Server.SPAWN_ENTITY);
     this.citizenVisibilityService = citizenVisibilityService;
   }
 

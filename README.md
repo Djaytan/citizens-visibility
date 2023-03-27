@@ -1,6 +1,6 @@
 # citizens-visibility
 ![Target](https://img.shields.io/badge/plugin-Minecraft-blueviolet)
-![Minecraft version](https://img.shields.io/badge/version-1.18.2-blue)
+![Minecraft version](https://img.shields.io/badge/version-1.19-blue)
 
 An extension of the Bukkit plugin [Citizens](https://www.spigotmc.org/resources/citizens.13811/) which permit to show conditionally NPCs.
 

@@ -1,9 +1,7 @@
 package fr.voltariuss.bukkit.citizens_visibility.model.entity;
 
-import fr.voltariuss.bukkit.citizens_visibility.model.entity.converter.UUIDConverter;
 import java.util.UUID;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,8 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 @Entity
 @Table(name = "citizen_visibility")
